@@ -14,6 +14,9 @@ import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
 import { LanguageSelect } from "@/components/site/LanguageSelect";
 import { DateOfBirthPicker } from "@/components/site/DateOfBirthPicker";
 import { findLanguage } from "@/lib/languages";
+import { useServerFn } from "@tanstack/react-start";
+import { generateKundliInLanguage } from "@/lib/kundli-ai.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/kundli")({
   head: () => ({
@@ -30,6 +33,8 @@ export const Route = createFileRoute("/kundli")({
 function KundliPage() {
   const [result, setResult] = useState<{ k: ComputedKundli; n: Narrative; planetEssences: string[] } | null>(null);
   const [form, setForm] = useState<BirthInput>({ name: "", gender: "", date: "", time: "", place: "", language: "en" });
+  const [generating, setGenerating] = useState(false);
+  const genInLang = useServerFn(generateKundliInLanguage);
 
   const set = <K extends keyof BirthInput>(k: K, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -48,13 +53,63 @@ function KundliPage() {
       <section className="py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const k = compute(form);
-              const n = narrate(k);
-              const planetEssences = k.planets.map((p) => p.essence);
-              setResult({ k, n, planetEssences });
+              const nEn = narrate(k);
+              const essEn = k.planets.map((p) => p.essence);
+              const langCode = form.language || "en";
+              setResult({ k, n: nEn, planetEssences: essEn });
               setTimeout(() => window.scrollTo({ top: window.innerHeight * 0.85, behavior: "smooth" }), 80);
+              if (langCode === "en") return;
+              setGenerating(true);
+              try {
+                const ai = await genInLang({
+                  data: {
+                    language: langCode,
+                    ctx: {
+                      name: k.input.name,
+                      gender: k.input.gender,
+                      lagna: k.lagna.signName,
+                      moonSign: k.moonSign,
+                      sunSign: k.sunSign,
+                      nakshatra: k.nakshatra.name,
+                      pada: k.nakshatra.pada,
+                      nakLord: k.nakshatra.lord,
+                      currentDasha: k.currentDasha,
+                      planets: k.planets.map((p) => ({
+                        name: p.name, sanskrit: p.sanskrit, signName: p.signName,
+                        house: p.house, nakshatra: p.nakshatra, dignity: p.dignity,
+                      })),
+                      yogas: k.yogas,
+                      doshas: k.doshas.map((d) => ({ name: d.name, present: d.present })),
+                    },
+                  },
+                });
+                const merged: Narrative = {
+                  ...nEn,
+                  overview: ai.overview || nEn.overview,
+                  personality: ai.personality?.length ? ai.personality : nEn.personality,
+                  career: ai.career?.length ? ai.career : nEn.career,
+                  finance: ai.finance?.length ? ai.finance : nEn.finance,
+                  love: ai.love?.length ? ai.love : nEn.love,
+                  marriage: ai.marriage?.length ? ai.marriage : nEn.marriage,
+                  health: ai.health?.length ? ai.health : nEn.health,
+                  family: ai.family?.length ? ai.family : nEn.family,
+                  spiritual: ai.spiritual?.length ? ai.spiritual : nEn.spiritual,
+                  education: ai.education?.length ? ai.education : nEn.education,
+                  travel: ai.travel?.length ? ai.travel : nEn.travel,
+                  yearAhead: ai.yearAhead?.length ? ai.yearAhead : nEn.yearAhead,
+                  dashaNow: ai.dashaNow || nEn.dashaNow,
+                };
+                const aiK: ComputedKundli = ai.remedies?.length ? { ...k, remedies: ai.remedies } : k;
+                const aiEss = ai.planetEssences.map((s, i) => s || essEn[i]);
+                setResult({ k: aiK, n: merged, planetEssences: aiEss });
+              } catch (err) {
+                toast.error(err instanceof Error ? err.message : "Could not generate in chosen language. Showing English.");
+              } finally {
+                setGenerating(false);
+              }
             }}
             className="rounded-3xl border border-border bg-card p-8 shadow-lift sm:p-10"
           >
@@ -77,11 +132,12 @@ function KundliPage() {
               </Field>
               <Field label="Reading Language" className="sm:col-span-2">
                 <LanguageSelect value={form.language || "en"} onChange={(v) => set("language", v)} />
-                <p className="mt-2 text-xs text-warmbrown/70">Greeting and blessing shown in your chosen language. Reading content is in English.</p>
+                <p className="mt-2 text-xs text-warmbrown/70">Your entire reading is written from scratch in the language you choose.</p>
               </Field>
             </div>
-            <Button type="submit" size="lg" className="mt-8 w-full bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
-              <Sparkles className="mr-2 h-4 w-4" /> Generate My Kundli
+            <Button type="submit" disabled={generating} size="lg" className="mt-8 w-full bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
+              <Sparkles className={"mr-2 h-4 w-4 " + (generating ? "animate-spin" : "")} />
+              {generating ? "Composing in your language…" : "Generate My Kundli"}
             </Button>
             <p className="mt-4 text-center text-xs text-warmbrown/70">
               No sign-up needed. Your details stay in your browser and are used only for this reading.
@@ -90,7 +146,7 @@ function KundliPage() {
         </div>
       </section>
 
-      {result && <KundliResult k={result.k} n={result.n} planetEssences={result.planetEssences} />}
+      {result && <KundliResult k={result.k} n={result.n} planetEssences={result.planetEssences} generating={generating} />}
     </main>
   );
 }
@@ -104,7 +160,7 @@ function Field({ label, children, className = "" }: { label: string; children: R
   );
 }
 
-function KundliResult({ k, n, planetEssences }: { k: ComputedKundli; n: Narrative; planetEssences: string[] }) {
+function KundliResult({ k, n, planetEssences, generating }: { k: ComputedKundli; n: Narrative; planetEssences: string[]; generating?: boolean }) {
   const lang = findLanguage(k.input.language || "en");
   const handleDownload = () => buildPdf(k, n);
 
@@ -119,6 +175,11 @@ function KundliResult({ k, n, planetEssences }: { k: ComputedKundli; n: Narrativ
           Reading prepared in <span className="font-medium text-charcoal">{lang.english}</span>
           {lang.code !== "en" && <> · <span className="font-display">{lang.native}</span></>}
         </p>
+        {generating && lang.code !== "en" && (
+          <p className="mt-2 text-center text-xs text-saffron flex items-center justify-center gap-1.5">
+            <Sparkles className="h-3 w-3 animate-spin" /> Composing your full reading in {lang.native}…
+          </p>
+        )}
 
         {/* Chart + at-a-glance */}
         <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr] items-start">
