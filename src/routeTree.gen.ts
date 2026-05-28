@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MatchmakingRouteImport } from './routes/matchmaking'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as KundliRouteImport } from './routes/kundli'
 import { Route as HoroscopeRouteImport } from './routes/horoscope'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -25,6 +26,11 @@ const PricingRoute = PricingRouteImport.update({
 const MatchmakingRoute = MatchmakingRouteImport.update({
   id: '/matchmaking',
   path: '/matchmaking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KundliRoute = KundliRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
+  '/login': typeof LoginRoute
   '/matchmaking': typeof MatchmakingRoute
   '/pricing': typeof PricingRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
+  '/login': typeof LoginRoute
   '/matchmaking': typeof MatchmakingRoute
   '/pricing': typeof PricingRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
+  '/login': typeof LoginRoute
   '/matchmaking': typeof MatchmakingRoute
   '/pricing': typeof PricingRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/horoscope'
     | '/kundli'
+    | '/login'
     | '/matchmaking'
     | '/pricing'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/horoscope'
     | '/kundli'
+    | '/login'
     | '/matchmaking'
     | '/pricing'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/horoscope'
     | '/kundli'
+    | '/login'
     | '/matchmaking'
     | '/pricing'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   HoroscopeRoute: typeof HoroscopeRoute
   KundliRoute: typeof KundliRoute
+  LoginRoute: typeof LoginRoute
   MatchmakingRoute: typeof MatchmakingRoute
   PricingRoute: typeof PricingRoute
 }
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/matchmaking'
       fullPath: '/matchmaking'
       preLoaderRoute: typeof MatchmakingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kundli': {
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   HoroscopeRoute: HoroscopeRoute,
   KundliRoute: KundliRoute,
+  LoginRoute: LoginRoute,
   MatchmakingRoute: MatchmakingRoute,
   PricingRoute: PricingRoute,
 }
