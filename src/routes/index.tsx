@@ -313,15 +313,15 @@ export function NorthIndianChart() {
 }
 
 /* --------------- Testimonials --------------- */
-const TESTIMONIALS = [
-  { name: "Aanya R.", role: "Bengaluru", text: "AstroSatya feels less like an app and more like a quiet morning ritual. The daily guidance has gently changed my routines." },
-  { name: "Vikram S.", role: "Mumbai", text: "The kundli is exquisitely presented. I've used many sites — this is the first one I'd actually save and return to." },
-  { name: "Mira K.", role: "Pune", text: "Matchmaking gave us a thoughtful, modern reading without losing the wisdom. We loved every page." },
-];
+import aanyaPic from "@/assets/testimonial-aanya.jpg";
+import vikramPic from "@/assets/testimonial-vikram.jpg";
+import miraPic from "@/assets/testimonial-mira.jpg";
 
-function initials(name: string) {
-  return name.split(/\s+/).map((p) => p[0]).join("").slice(0, 2).toUpperCase();
-}
+const TESTIMONIALS = [
+  { name: "Aanya R.", role: "Bengaluru", avatar: aanyaPic, text: "AstroSatya feels less like an app and more like a quiet morning ritual. The daily guidance has gently changed my routines." },
+  { name: "Vikram S.", role: "Mumbai", avatar: vikramPic, text: "The kundli is exquisitely presented. I've used many sites — this is the first one I'd actually save and return to." },
+  { name: "Mira K.", role: "Pune", avatar: miraPic, text: "Matchmaking gave us a thoughtful, modern reading without losing the wisdom. We loved every page." },
+];
 
 function Testimonials() {
   return (
@@ -338,12 +338,12 @@ function Testimonials() {
                 "{t.text}"
               </blockquote>
               <figcaption className="mt-6 flex items-center gap-3 text-sm text-warmbrown">
-                <span
-                  aria-hidden
-                  className="grid h-11 w-11 place-items-center rounded-full bg-gradient-gold font-display text-base text-primary-foreground shadow-gold ring-1 ring-bronze/30"
-                >
-                  {initials(t.name)}
-                </span>
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  loading="lazy"
+                  className="h-12 w-12 rounded-full object-cover ring-1 ring-bronze/30 shadow-soft"
+                />
                 <span>
                   <span className="block font-medium text-charcoal">{t.name}</span>
                   <span className="text-xs text-warmbrown/80">{t.role}</span>
