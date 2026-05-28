@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/astro-logo.png";
 
 const nav = [
   { to: "/kundli", label: "Kundli" },
@@ -21,10 +22,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link to="/" className="flex items-center gap-2 group">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-gold shadow-gold">
-            <Sparkles className="h-4 w-4 text-primary-foreground" />
-          </span>
-          <span className="font-display text-xl tracking-tight">AstroSatya</span>
+          <img src={logo} alt="AstroSatya" className="h-10 w-auto" width={1024} height={1024} />
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
