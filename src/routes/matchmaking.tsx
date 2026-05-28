@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { SectionHeading } from "@/routes/index";
+import { computeMatch, type Partner, type MatchResult } from "@/lib/matchmaking-engine";
 
 export const Route = createFileRoute("/matchmaking")({
   head: () => ({
@@ -20,7 +21,10 @@ export const Route = createFileRoute("/matchmaking")({
 });
 
 function MatchPage() {
-  const [show, setShow] = useState(false);
+  const blank: Partner = { name: "", date: "", time: "", place: "" };
+  const [a, setA] = useState<Partner>(blank);
+  const [b, setB] = useState<Partner>(blank);
+  const [result, setResult] = useState<MatchResult | null>(null);
   return (
     <main className="bg-ivory">
       <section className="bg-gradient-sky py-20">
@@ -36,11 +40,15 @@ function MatchPage() {
       <section className="py-16">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <form
-            onSubmit={(e) => { e.preventDefault(); setShow(true); setTimeout(() => window.scrollTo({ top: window.innerHeight * 0.9, behavior: "smooth" }), 80); }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              setResult(computeMatch(a, b));
+              setTimeout(() => window.scrollTo({ top: window.innerHeight * 0.9, behavior: "smooth" }), 80);
+            }}
             className="grid gap-8 md:grid-cols-2"
           >
-            <PartnerForm title="Partner One" />
-            <PartnerForm title="Partner Two" />
+            <PartnerForm title="Partner One" value={a} onChange={setA} />
+            <PartnerForm title="Partner Two" value={b} onChange={setB} />
             <div className="md:col-span-2 text-center">
               <Button type="submit" size="lg" className="bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
                 <Heart className="mr-2 h-4 w-4" /> Check Compatibility
@@ -50,22 +58,23 @@ function MatchPage() {
         </div>
       </section>
 
-      {show && <Result />}
+      {result && <Result r={result} />}
     </main>
   );
 }
 
-function PartnerForm({ title }: { title: string }) {
+function PartnerForm({ title, value, onChange }: { title: string; value: Partner; onChange: (p: Partner) => void }) {
+  const set = <K extends keyof Partner>(k: K, v: string) => onChange({ ...value, [k]: v });
   return (
     <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
       <h3 className="font-display text-2xl">{title}</h3>
       <div className="mt-6 grid gap-5">
-        <Field label="Name"><Input required placeholder="Name" /></Field>
+        <Field label="Name"><Input required placeholder="Name" value={value.name} onChange={(e) => set("name", e.target.value)} /></Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Date of Birth"><Input required type="date" /></Field>
-          <Field label="Time"><Input required type="time" /></Field>
+          <Field label="Date of Birth"><Input required type="date" value={value.date} onChange={(e) => set("date", e.target.value)} /></Field>
+          <Field label="Time"><Input required type="time" value={value.time} onChange={(e) => set("time", e.target.value)} /></Field>
         </div>
-        <Field label="Place of Birth"><Input required placeholder="City, Country" /></Field>
+        <Field label="Place of Birth"><Input required placeholder="City, Country" value={value.place} onChange={(e) => set("place", e.target.value)} /></Field>
       </div>
     </div>
   );
@@ -80,16 +89,16 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Result() {
-  const score = 29; // out of 36
-  const pct = Math.round((score / 36) * 100);
+function Result({ r }: { r: MatchResult }) {
+  const score = r.total;
+  const pct = r.percent;
   const circumference = 2 * Math.PI * 80;
   const offset = circumference * (1 - pct / 100);
 
   return (
     <section className="border-t border-border/60 bg-cream/40 py-20 animate-rise">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHeading eyebrow="Your reading" title="A graceful match" />
+        <SectionHeading eyebrow="Ashtakoot Guna Milan" title={r.verdict} />
 
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-3">
           <div className="relative mx-auto aspect-square w-full max-w-[280px]">
@@ -112,47 +121,59 @@ function Result() {
             <div className="absolute inset-0 grid place-items-center text-center">
               <div>
                 <Sparkles className="mx-auto h-5 w-5 text-saffron" />
-                <p className="mt-2 font-display text-5xl text-charcoal">{score}<span className="text-2xl text-warmbrown/60">/36</span></p>
+                <p className="mt-2 font-display text-5xl text-charcoal">{score.toFixed(1)}<span className="text-2xl text-warmbrown/60">/36</span></p>
                 <p className="mt-1 text-xs uppercase tracking-wider text-bronze">Guna Score</p>
               </div>
             </div>
           </div>
 
           <div className="space-y-5 lg:col-span-2">
-            {[
-              ["Emotional Compatibility", 88],
-              ["Marriage Harmony", 82],
-              ["Mental Connection", 90],
-              ["Spiritual Alignment", 76],
-              ["Long-term Stability", 79],
-            ].map(([label, v]) => (
-              <div key={label as string}>
+            {r.scores.map(({ label, value: v }) => (
+              <div key={label}>
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-charcoal">{label}</span>
                   <span className="font-display text-saffron">{v}%</span>
                 </div>
-                <Progress value={v as number} className="mt-2 h-2 bg-sand [&>*]:bg-gradient-gold" />
+                <Progress value={v} className="mt-2 h-2 bg-sand [&>*]:bg-gradient-gold" />
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="mt-16 rounded-3xl border border-border bg-card p-8 shadow-soft">
+          <h3 className="font-display text-2xl">The 8 Kootas in detail</h3>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+            <table className="w-full text-sm">
+              <thead className="bg-cream/60 text-xs uppercase tracking-wider text-warmbrown/80">
+                <tr><th className="px-4 py-3 text-left">Koota</th><th className="px-4 py-3 text-right">Score</th><th className="px-4 py-3 text-left">Note</th></tr>
+              </thead>
+              <tbody>
+                {r.kootas.map((k) => (
+                  <tr key={k.label} className="border-t border-border/60">
+                    <td className="px-4 py-3 font-medium text-charcoal">{k.label}</td>
+                    <td className="px-4 py-3 text-right font-display text-saffron">{k.points}/{k.max}</td>
+                    <td className="px-4 py-3 text-warmbrown/85">{k.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-6 text-sm text-warmbrown/85">{r.mangal.verdict}</p>
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2">
           <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
             <h3 className="font-display text-2xl">Strengths</h3>
             <ul className="mt-5 space-y-3 text-warmbrown">
-              <li>· A natural emotional rhythm — you understand each other's silence.</li>
-              <li>· Shared values around family, ritual, and home.</li>
-              <li>· Jupiter's blessing supports growth as a couple.</li>
+              {r.strengths.map((s, i) => <li key={i}>· {s}</li>)}
             </ul>
           </div>
           <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
             <h3 className="font-display text-2xl">Gentle challenges</h3>
             <ul className="mt-5 space-y-3 text-warmbrown">
-              <li>· Different paces in decision-making — patience is the remedy.</li>
-              <li>· Honour each other's solitude; do not interpret it as distance.</li>
-              <li>· Plan finances together early to avoid friction.</li>
+              {r.challenges.map((s, i) => <li key={i}>· {s}</li>)}
             </ul>
+            <p className="mt-6 rounded-xl bg-cream/60 p-4 text-sm italic text-warmbrown/90">Remedy: {r.remedy}</p>
           </div>
         </div>
       </div>
