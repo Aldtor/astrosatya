@@ -319,6 +319,10 @@ const TESTIMONIALS = [
   { name: "Mira K.", role: "Pune", text: "Matchmaking gave us a thoughtful, modern reading without losing the wisdom. We loved every page." },
 ];
 
+function initials(name: string) {
+  return name.split(/\s+/).map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+}
+
 function Testimonials() {
   return (
     <section className="bg-cream/40 py-24">
@@ -333,8 +337,17 @@ function Testimonials() {
               <blockquote className="mt-4 font-display text-lg leading-snug text-charcoal">
                 "{t.text}"
               </blockquote>
-              <figcaption className="mt-6 text-sm text-warmbrown">
-                <span className="font-medium text-charcoal">{t.name}</span> · {t.role}
+              <figcaption className="mt-6 flex items-center gap-3 text-sm text-warmbrown">
+                <span
+                  aria-hidden
+                  className="grid h-11 w-11 place-items-center rounded-full bg-gradient-gold font-display text-base text-primary-foreground shadow-gold ring-1 ring-bronze/30"
+                >
+                  {initials(t.name)}
+                </span>
+                <span>
+                  <span className="block font-medium text-charcoal">{t.name}</span>
+                  <span className="text-xs text-warmbrown/80">{t.role}</span>
+                </span>
               </figcaption>
             </figure>
           ))}
