@@ -34,7 +34,12 @@ export interface ComputedKundli {
   input: BirthInput;
   geo: { lat: number; lon: number; tz: number; matched: string };
   ayanamsa: number;
-  planets: { name: string; sanskrit: string; signName: string; deg: string; sign: number; house: number }[];
+  planets: {
+    name: string; sanskrit: string; signName: string; deg: string;
+    sign: number; house: number;
+    nakshatra: string; nakLord: string; pada: number;
+    dignity: string; essence: string;
+  }[];
   lagna: { sign: number; signName: string; deg: string };
   moonSign: string;
   sunSign: string;
@@ -62,9 +67,17 @@ export function compute(input: BirthInput): ComputedKundli {
   };
 
   const planets = (Object.keys(sid) as (keyof typeof sid)[]).map((p) => {
-    const s = degToSignDeg(sid[p]);
+    const lon = sid[p];
+    const s = degToSignDeg(lon);
     const house = ((s.sign - lagna.sign + 12) % 12) + 1;
-    return { name: p, sanskrit: sanskrit[p], signName: s.signName, deg: s.label, sign: s.sign, house };
+    const nk = nakshatraOf(lon);
+    return {
+      name: p, sanskrit: sanskrit[p],
+      signName: s.signName, deg: s.label, sign: s.sign, house,
+      nakshatra: nk.name, nakLord: nk.lord, pada: nk.pada,
+      dignity: dignityOf(p, s.sign),
+      essence: planetEssence(p, s.sign, house),
+    };
   });
 
   const moon = degToSignDeg(sid.Moon);
@@ -423,4 +436,56 @@ function luckyNumbers(sign: string) {
     : sign.includes("Tula") ? "6, 5, 9" : sign.includes("Vrishchika") ? "9, 1, 8"
     : sign.includes("Dhanu") ? "3, 6, 9" : sign.includes("Makara") ? "8, 4, 6"
     : sign.includes("Kumbha") ? "8, 4, 1" : "3, 7, 9";
+}
+
+// ---------- Planet dignity & essence ----------
+const DIGNITY: Record<string, { exalt: number; debil: number; own: number[] }> = {
+  Sun:     { exalt: 0, debil: 6, own: [4] },
+  Moon:    { exalt: 1, debil: 7, own: [3] },
+  Mars:    { exalt: 9, debil: 3, own: [0, 7] },
+  Mercury: { exalt: 5, debil: 11, own: [2, 5] },
+  Jupiter: { exalt: 3, debil: 9, own: [8, 11] },
+  Venus:   { exalt: 11, debil: 5, own: [1, 6] },
+  Saturn:  { exalt: 6, debil: 0, own: [9, 10] },
+};
+
+function dignityOf(planet: string, sign: number): string {
+  if (planet === "Rahu" || planet === "Ketu") return "Shadow";
+  const d = DIGNITY[planet];
+  if (!d) return "Neutral";
+  if (sign === d.exalt) return "Exalted";
+  if (sign === d.debil) return "Debilitated";
+  if (d.own.includes(sign)) return "Own sign";
+  return "Neutral";
+}
+
+const HOUSE_THEME = [
+  "self, body and first impressions",
+  "wealth, speech and family of origin",
+  "courage, siblings and short journeys",
+  "home, mother and inner peace",
+  "creativity, romance and children",
+  "service, health and daily routines",
+  "partnership, marriage and contracts",
+  "transformation, mysteries and hidden gains",
+  "dharma, wisdom and long pilgrimages",
+  "career, fame and public standing",
+  "gains, friendships and aspirations",
+  "moksha, solitude and foreign lands",
+];
+
+function planetEssence(planet: string, sign: number, house: number): string {
+  const dig = dignityOf(planet, sign);
+  const tag =
+    dig === "Exalted" ? "shines exalted" :
+    dig === "Debilitated" ? "feels tender" :
+    dig === "Own sign" ? "stands in its own seat" :
+    dig === "Shadow" ? "casts its karmic shadow" :
+    "moves comfortably";
+  return `${tag} in the ${ordinal(house)} house of ${HOUSE_THEME[house - 1]}.`;
+}
+
+function ordinal(n: number) {
+  const s = ["th","st","nd","rd"]; const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
