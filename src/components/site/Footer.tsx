@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/astro-logo.png";
+import logo from "@/assets/astrosatya-logo.png";
 
 export function Footer() {
   return (
@@ -13,8 +13,11 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-3">
               <img src={logo} alt="AstroSatya" className="h-10 w-auto" width={1024} height={1024} />
+              <span className="font-display text-xl tracking-tight text-[oklch(0.95_0.02_82)]">
+                Astro<span className="text-saffron" style={{ fontFamily: '"Hind", "Noto Sans Devanagari", sans-serif', fontWeight: 600 }}>सत्य</span>
+              </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[oklch(0.78_0.025_75)]">
               Ancient Vedic wisdom, thoughtfully designed for modern life. Discover your cosmic truth.
