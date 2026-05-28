@@ -93,19 +93,6 @@ function Hero() {
               <Link to="/horoscope">Explore Horoscope</Link>
             </Button>
           </div>
-          <div className="mt-10 flex items-center gap-6 text-sm text-warmbrown/80">
-            <div className="flex -space-x-2">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-8 w-8 rounded-full border-2 border-ivory bg-gradient-gold" />
-              ))}
-            </div>
-            <div>
-              <div className="flex items-center gap-1 text-saffron">
-                {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
-              </div>
-              <p className="mt-0.5">Trusted by 120,000+ seekers</p>
-            </div>
-          </div>
         </div>
 
         <div className="relative mx-auto aspect-square w-full max-w-[520px]">
