@@ -11,7 +11,7 @@ import {
 import {
   getSentences, getHints, isSupportedLang,
   RASHI_TRAITS_I18N, DASHA_NARRATIVE_I18N, NAK_GIFT_I18N,
-  HOUSE_THEME_I18N, GEMSTONES_I18N,
+  GEMSTONES_I18N,
 } from "./kundli-i18n";
 
 export { RASHIS, RASHI_LORDS, NAKSHATRAS };
@@ -179,63 +179,6 @@ export function compute(input: BirthInput): ComputedKundli {
 
 // ---------- Interpretation library ----------
 
-const RASHI_TRAITS: Record<string, string> = {
-  "Mesha (Aries)": "fiery initiative, pioneering courage and a restless need to begin",
-  "Vrishabha (Taurus)": "steady patience, a love of beauty and an instinct for what endures",
-  "Mithuna (Gemini)": "quicksilver curiosity, language as breath, and gentle wit",
-  "Karka (Cancer)": "deep feeling, lunar memory and a sanctuary-builder's heart",
-  "Simha (Leo)": "radiant warmth, generous leadership and a creative inner sovereign",
-  "Kanya (Virgo)": "precise care, healing service and reverence for craft",
-  "Tula (Libra)": "graceful diplomacy, aesthetic balance and partnership wisdom",
-  "Vrishchika (Scorpio)": "fierce devotion, transformative depth and unflinching truth",
-  "Dhanu (Sagittarius)": "wide-horizon wisdom, philosophical fire and hopeful seeking",
-  "Makara (Capricorn)": "patient ambition, structure-building and quiet authority",
-  "Kumbha (Aquarius)": "humanitarian vision, original insight and friendly detachment",
-  "Meena (Pisces)": "oceanic compassion, mystic intuition and surrender as strength",
-};
-
-const DASHA_NARRATIVE: Record<string, string> = {
-  Sun: "a chapter of recognition, leadership and renewed self-confidence — your inner light becomes visible to others.",
-  Moon: "a tender, emotional season — home, mother, memory and intuition lead the way.",
-  Mars: "an energetic, action-driven period — courage rises; channel it through discipline, not impulse.",
-  Mercury: "a flowering of intellect, communication and commerce — words, contracts and travel bring growth.",
-  Jupiter: "a wisdom-rich, expansive era — teachers arrive, family grows, dharma deepens.",
-  Venus: "a luxurious, artistic, love-filled period — beauty, partnership and prosperity ripen.",
-  Saturn: "a patient, structural decade — slow building, hard lessons, and the rewards of integrity.",
-  Rahu: "an ambitious, unconventional rise — bold leaps abroad or into new fields; stay grounded.",
-  Ketu: "an inward, spiritual turn — let go gracefully; meditation and study become your wealth.",
-};
-
-const NAK_GIFT: Record<string, string> = {
-  Ashwini: "swift healing, the gift of beginnings",
-  Bharani: "the courage to bear and transform",
-  Krittika: "fire that cuts through illusion",
-  Rohini: "magnetic creativity and abundance",
-  Mrigashira: "the seeker who never tires",
-  Ardra: "the storm that clears the sky",
-  Punarvasu: "the return to wholeness",
-  Pushya: "nourishment of soul and family",
-  Ashlesha: "psychic depth and serpent wisdom",
-  Magha: "ancestral dignity and throne",
-  "Purva Phalguni": "love, leisure and creative joy",
-  "Uttara Phalguni": "noble friendship and patronage",
-  Hasta: "skilled hands and clever solutions",
-  Chitra: "brilliant artistry and design",
-  Swati: "independent, wind-borne wisdom",
-  Vishakha: "focused purpose and resolve",
-  Anuradha: "loyal devotion and lasting friendship",
-  Jyeshtha: "elder courage, protective strength",
-  Mula: "root-knowing, philosophical depth",
-  "Purva Ashadha": "invincible optimism",
-  "Uttara Ashadha": "unshakable later victory",
-  Shravana: "the listening heart, sacred learning",
-  Dhanishta: "rhythm, music and prosperity",
-  Shatabhisha: "the hundred healers, mystic medicine",
-  "Purva Bhadrapada": "transformative fire",
-  "Uttara Bhadrapada": "deep stillness, oceanic peace",
-  Revati: "compassionate guidance for all beings",
-};
-
 export interface Narrative {
   overview: string;
   personality: string[];
@@ -256,18 +199,6 @@ export interface Narrative {
   gemstone: string;
   mantra: string;
 }
-
-const GEMSTONES: Record<string, string> = {
-  Sun: "Ruby (Manik) set in gold, worn on the ring finger",
-  Moon: "Natural pearl (Moti) set in silver, worn on the little finger",
-  Mars: "Red coral (Moonga) in gold or copper, worn on the ring finger",
-  Mercury: "Emerald (Panna) in gold, worn on the little finger",
-  Jupiter: "Yellow sapphire (Pukhraj) in gold, worn on the index finger",
-  Venus: "Diamond or white sapphire in silver, worn on the middle finger",
-  Saturn: "Blue sapphire (Neelam) in silver, worn after careful trial",
-  Rahu: "Hessonite (Gomed) in silver, worn on the middle finger",
-  Ketu: "Cat's-eye (Lehsunia) in silver, worn on the ring finger",
-};
 
 const MANTRAS: Record<string, string> = {
   Sun: "Om Hraam Hreem Hraum Sah Suryaya Namah",
