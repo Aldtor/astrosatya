@@ -31,7 +31,6 @@ function Home() {
       <HoroscopePreview />
       <KundliPreview />
       <Testimonials />
-      <PricingTeaser />
       <FAQ />
     </main>
   );
@@ -339,61 +338,13 @@ function Testimonials() {
   );
 }
 
-/* --------------- Pricing Teaser --------------- */
-function PricingTeaser() {
-  return (
-    <section className="py-24">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <SectionHeading eyebrow="Membership" title="Simple, generous, soulful pricing" />
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          <PlanCard name="Free" price="₹0" tagline="Begin your journey" features={["Basic kundli", "Daily horoscope", "Compatibility teaser"]} cta="Start free" to="/login" />
-          <PlanCard name="Premium" featured price="₹399" period="/month" tagline="The complete sanctuary" features={["Full kundli with Dasha", "Personalised horoscope", "Unlimited matchmaking", "Saved reports"]} cta="Begin Premium" to="/pricing" />
-          <PlanCard name="Pro" price="₹899" period="/month" tagline="With astrologer consults" features={["Everything in Premium", "Monthly astrologer call", "Priority support", "Yearly forecast"]} cta="Go Pro" to="/pricing" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function PlanCard({
-  name, price, period, tagline, features, cta, to, featured,
-}: {
-  name: string; price: string; period?: string; tagline: string;
-  features: string[]; cta: string; to: string; featured?: boolean;
-}) {
-  return (
-    <div className={`relative rounded-3xl border p-8 shadow-soft transition hover:-translate-y-1 hover:shadow-lift ${featured ? "border-gold/60 bg-gradient-to-b from-card to-cream shadow-gold" : "border-border bg-card"}`}>
-      {featured && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gradient-gold px-4 py-1 text-xs font-medium uppercase tracking-wider text-primary-foreground shadow-gold">
-          Most loved
-        </span>
-      )}
-      <h3 className="font-display text-2xl">{name}</h3>
-      <p className="mt-1 text-sm text-warmbrown/80">{tagline}</p>
-      <div className="mt-6 flex items-baseline gap-1">
-        <span className="font-display text-5xl">{price}</span>
-        {period && <span className="text-warmbrown/70">{period}</span>}
-      </div>
-      <ul className="mt-7 space-y-3 text-sm">
-        {features.map((f) => (
-          <li key={f} className="flex items-start gap-2 text-warmbrown">
-            <Check className="mt-0.5 h-4 w-4 text-saffron" /> {f}
-          </li>
-        ))}
-      </ul>
-      <Button asChild className={`mt-8 w-full ${featured ? "bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95" : "bg-charcoal text-ivory hover:bg-charcoal/90"}`}>
-        <Link to={to}>{cta}</Link>
-      </Button>
-    </div>
-  );
-}
 
 /* --------------- FAQ --------------- */
 const FAQS = [
-  ["Is the kundli generation free?", "Yes — basic kundli is free for everyone. Premium unlocks detailed Dasha, dosha analysis, and saved reports."],
+  ["Is the kundli generation free?", "Yes — kundli generation is completely free for everyone, with detailed planetary positions, Dasha analysis, and dosha insights."],
   ["Which astrology tradition do you follow?", "Vedic (Jyotish) — sidereal zodiac with Lahiri ayanamsa, using classical North Indian chart conventions."],
   ["Is my birth data private?", "Always. Your details are encrypted and never shared. You may delete your data at any time."],
-  ["Can I talk to a real astrologer?", "Yes — Pro members receive a monthly consultation with a vetted Vedic astrologer."],
+  ["Can I talk to a real astrologer?", "Yes — we offer personal consultations with vetted Vedic astrologers through our contact page."],
 ];
 
 function FAQ() {
