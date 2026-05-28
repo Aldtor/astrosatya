@@ -8,6 +8,11 @@ import {
   julianDay, siderealPositions, ayanamsaLahiri, ascendantLongitude,
   degToSignDeg, nakshatraOf, geocode, RASHIS, RASHI_LORDS, NAKSHATRAS,
 } from "./astro-core";
+import {
+  getSentences, getHints, isSupportedLang,
+  RASHI_TRAITS_I18N, DASHA_NARRATIVE_I18N, NAK_GIFT_I18N,
+  HOUSE_THEME_I18N, GEMSTONES_I18N,
+} from "./kundli-i18n";
 
 export { RASHIS, RASHI_LORDS, NAKSHATRAS };
 
@@ -143,24 +148,15 @@ export function compute(input: BirthInput): ComputedKundli {
   // Ashtakoot-style number from moon sign + nakshatra index (deterministic)
   const ashtakoot = 18 + ((moon.sign * 3 + nak.index) % 19);
 
-  // Remedies
-  const lordRemedies: Record<string, string> = {
-    Sun: "Offer water to the Sun at sunrise; chant Aditya Hridayam on Sundays.",
-    Moon: "Wear white on Mondays; meditate by moonlight near water.",
-    Mars: "Read Hanuman Chalisa on Tuesdays; donate red lentils.",
-    Mercury: "Feed green grass to a cow on Wednesdays; chant Vishnu Sahasranama.",
-    Jupiter: "Wear yellow on Thursdays; offer turmeric and chana dal at a temple.",
-    Venus: "Light a ghee lamp at dusk on Fridays; offer white flowers to Lakshmi.",
-    Saturn: "Light a mustard-oil lamp under a peepal tree on Saturdays; serve elders.",
-    Rahu: "Donate black sesame; chant Durga Saptashati.",
-    Ketu: "Feed stray dogs; meditate in silence at dusk.",
-  };
+  // Remedies (localised)
+  const langCode = isSupportedLang(input.language ?? "en") ? (input.language ?? "en") : "en";
+  const hints = getHints(langCode);
+  const sentences = getSentences(langCode);
   const remedies = [
-    lordRemedies[currentDasha.lord],
-    lordRemedies[nak.lord],
-    lordRemedies[RASHI_LORDS[moon.sign]],
-    "Begin each day with three slow breaths and one moment of gratitude.",
-    "Keep a small altar at home — a flame, a flower, a sacred sound.",
+    hints.remedies[currentDasha.lord],
+    hints.remedies[nak.lord],
+    hints.remedies[RASHI_LORDS[moon.sign]],
+    ...sentences.remediesExtra,
   ];
 
   return {
@@ -285,150 +281,74 @@ const MANTRAS: Record<string, string> = {
   Ketu: "Om Sraam Sreem Sraum Sah Ketave Namah",
 };
 
-export function narrate(k: ComputedKundli): Narrative {
-  const moonTrait = RASHI_TRAITS[k.moonSign];
-  const sunTrait = RASHI_TRAITS[k.sunSign];
-  const lagnaTrait = RASHI_TRAITS[k.lagna.signName];
-  const nakGift = NAK_GIFT[k.nakshatra.name] ?? "a quiet, distinct gift";
-  const dasha = DASHA_NARRATIVE[k.currentDasha.lord];
+export function narrate(k: ComputedKundli, langCode?: string): Narrative {
+  const code = langCode ?? k.input.language ?? "en";
+  const lang = isSupportedLang(code) ? code : "en";
+  const s = getSentences(lang);
+  const h = getHints(lang);
+  const traits = RASHI_TRAITS_I18N[lang] ?? RASHI_TRAITS_I18N.en;
+  const dashaTable = DASHA_NARRATIVE_I18N[lang] ?? DASHA_NARRATIVE_I18N.en;
+  const nakGiftTable = NAK_GIFT_I18N[lang] ?? NAK_GIFT_I18N.en;
+  const gemstones = GEMSTONES_I18N[lang] ?? GEMSTONES_I18N.en;
 
-  const overview =
-    `Your chart rises in ${k.lagna.signName}, lending you ${lagnaTrait}. The Moon — your inner ` +
-    `landscape — rests in ${k.moonSign}, weaving ${moonTrait}. The Sun, your dharmic axis, sits ` +
-    `in ${k.sunSign}, asking you to embody ${sunTrait}. You were born under ${k.nakshatra.name} ` +
-    `nakshatra (pada ${k.nakshatra.pada}), ruled by ${k.nakshatra.lord}, which gifts you ${nakGift}.`;
+  const moonTrait = traits[k.moonSign];
+  const sunTrait = traits[k.sunSign];
+  const lagnaTrait = traits[k.lagna.signName];
+  const nakGift = nakGiftTable[k.nakshatra.name] ?? (lang === "hi" ? "एक मौन, विशिष्ट उपहार" : "a quiet, distinct gift");
+  const dashaText = dashaTable[k.currentDasha.lord];
 
   return {
-    overview,
-    personality: [
-      `From your Lagna in ${k.lagna.signName}, you meet the world with ${lagnaTrait}. ` +
-      `Others perceive you as composed, intentional, and quietly luminous.`,
-      `Your Moon in ${k.moonSign} colours your private world with ${moonTrait}. ` +
-      `In solitude you return to a steady, almost ancestral rhythm.`,
-      `Born in ${k.nakshatra.name}, you carry ${nakGift}. This is your subtle signature — ` +
-      `the quality friends remember long after a conversation ends.`,
-    ],
-    career: [
-      `With the ${k.currentDasha.lord} Mahadasha active, your professional life enters ${dasha}`,
-      `Roles aligned to ${RASHI_LORDS[k.lagna.sign]} energies — work involving ` +
-      careerHints(k.lagna.sign) + ` — will feel natural and rewarding.`,
-      `Avoid forcing growth in the first quarter of any new venture; the second half of the year ` +
-      `carries stronger karmic momentum for visibility and promotion.`,
-    ],
-    finance: [
-      `Wealth flows steadily through ${financeHints(k.moonSign)}. Avoid speculative ventures ` +
-      `during Saturn's transit over your 8th house.`,
-      `Long-term, sattvic investments — land, gold, education, sacred art — multiply gracefully.`,
-      `Keep a portion of every earning for dāna (giving). Charity opens unseen channels of return.`,
-    ],
-    love: [
-      `In love you offer ${loveHints(k.moonSign)}. You long for a partner who can meet your silence as well as your laughter.`,
-      `Venus in your chart asks you to choose with intention rather than urgency.`,
-      `Honest conversation, not perfection, is the true gemstone of your relationships.`,
-    ],
-    marriage: [
-      `Marriage indicators suggest a partner who is ${marriageHints(k.lagna.sign)}.`,
-      `The 7th house guidance favours unions formed after age 26, with deeper harmony unfolding gradually.`,
-      `Annual rituals together — a yearly pilgrimage or shared fast — will quietly strengthen the bond.`,
-    ],
-    health: [
-      `Your constitution leans ${healthHints(k.lagna.sign)}. Pay loving attention to ` +
-      `${healthFocus(k.lagna.sign)}.`,
-      `Daily pranayama (Anulom-Vilom and Bhramari) balances your nervous system beautifully.`,
-      `Sleep before 11 pm during ${k.currentDasha.lord} dasha — your body restores fastest then.`,
-    ],
-    family: [
-      `Family is a temple in your chart. Your mother's blessings carry extraordinary weight in this lifetime.`,
-      `Children, when they arrive, are likely to be artistic, sensitive, and spiritually inclined.`,
-      `Maintain a small altar dedicated to your kuldevta — it harmonises generational karma.`,
-    ],
-    spiritual: [
-      `Your spiritual path is ${spiritHints(k.nakshatra.lord)}. Approach it with regularity rather than intensity.`,
-      `Mantra japa with a tulsi or rudraksha mala for 11 minutes daily quietly rewires your subtle body.`,
-      `Visit a flowing river or ancient temple once a year — your soul measures time in pilgrimages.`,
-    ],
-    education: [
-      `Your mind grasps best through ${learningHints(k.nakshatra.lord)}.`,
-      `Periods between ages 18–24 and 32–36 are especially fertile for higher studies and certifications.`,
-      `Teaching what you learn — even informally — accelerates your own mastery tenfold.`,
-    ],
-    travel: [
-      `Travel during ${k.currentDasha.lord} dasha tends to be ${travelHints(k.currentDasha.lord)}.`,
-      `Eastward and northward journeys carry the strongest karmic openings.`,
-      `Pilgrimages — Kashi, Tirupati, Kedarnath, or a sacred site personal to your lineage — bring lasting peace.`,
-    ],
-    dashaNow:
-      `You are presently in the ${k.currentDasha.lord} Mahadasha (${Math.floor(k.currentDasha.from)} – ${Math.floor(k.currentDasha.to)}). ` +
-      `This is ${dasha} Honour its themes; resist resisting it.`,
-    yearAhead: [
-      `The coming twelve months emphasise inner clarity over outer noise. A relationship, a project, or a place ` +
-      `that has quietly drained you will gently release.`,
-      `Between months 4 and 7, an opportunity arrives through someone older or more experienced — say yes slowly, but say yes.`,
-      `By the year's end, a new daily practice (writing, walking, chanting) will have reshaped your inner life more than any external event.`,
-    ],
-    luckyColors: luckyColors(k.lagna.sign),
-    luckyDays: luckyDays(k.lagna.sign),
+    overview: s.overview({
+      lagna: k.lagna.signName, lagnaTrait,
+      moonSign: k.moonSign, moonTrait,
+      sunSign: k.sunSign, sunTrait,
+      nakshatra: k.nakshatra.name, pada: k.nakshatra.pada, nakLord: k.nakshatra.lord, nakGift,
+    }),
+    personality: s.personality({
+      lagna: k.lagna.signName, lagnaTrait, moonSign: k.moonSign, moonTrait,
+      nakshatra: k.nakshatra.name, nakGift,
+    }),
+    career: s.career({
+      dashaLord: k.currentDasha.lord, dashaText,
+      lagnaLord: RASHI_LORDS[k.lagna.sign],
+      careerArea: h.career[k.lagna.sign],
+    }),
+    finance: s.finance({ financeArea: financeAreaFor(k.moonSign, h) }),
+    love: s.love({ loveStyle: loveStyleFor(k.moonSign, h) }),
+    marriage: s.marriage({ partnerTrait: h.marriage[k.lagna.sign] }),
+    health: s.health({
+      dosha: h.healthDosha[k.lagna.sign],
+      focus: h.healthFocus[k.lagna.sign],
+      dashaLord: k.currentDasha.lord,
+    }),
+    family: s.family(),
+    spiritual: s.spiritual({ spiritPath: h.spirit[k.nakshatra.lord] ?? "" }),
+    education: s.education({ learningStyle: h.learning[k.nakshatra.lord] ?? "" }),
+    travel: s.travel({ dashaLord: k.currentDasha.lord, travelStyle: h.travel[k.currentDasha.lord] ?? "" }),
+    dashaNow: s.dashaNow({ dashaLord: k.currentDasha.lord, from: k.currentDasha.from, to: k.currentDasha.to, dashaText }),
+    yearAhead: s.yearAhead(),
+    luckyColors: h.luckyColors[k.lagna.sign],
+    luckyDays: h.luckyDays[k.lagna.sign],
     luckyNumbers: luckyNumbers(k.moonSign),
-    gemstone: GEMSTONES[k.currentDasha.lord] ?? GEMSTONES.Jupiter,
+    gemstone: gemstones[k.currentDasha.lord] ?? gemstones.Jupiter,
     mantra: MANTRAS[k.currentDasha.lord] ?? MANTRAS.Jupiter,
   };
+
+  // Internal helpers for sign-keyword based hints
+  function financeAreaFor(sign: string, hh: ReturnType<typeof getHints>) {
+    if (sign.includes("Vrishabha") || sign.includes("Tula")) return hh.finance.kapha;
+    if (sign.includes("Karka") || sign.includes("Meena")) return hh.finance.intuition;
+    if (sign.includes("Mesha") || sign.includes("Vrishchika")) return hh.finance.mars;
+    return hh.finance.default;
+  }
+  function loveStyleFor(sign: string, hh: ReturnType<typeof getHints>) {
+    if (sign.includes("Karka") || sign.includes("Meena")) return hh.love.soft;
+    if (sign.includes("Simha") || sign.includes("Mesha")) return hh.love.warm;
+    if (sign.includes("Tula") || sign.includes("Vrishabha")) return hh.love.aesthetic;
+    return hh.love.default;
+  }
 }
 
-// ----- small helpers for varied, sign-aware sentences -----
-function careerHints(s: number) {
-  const a = ["leadership and pioneering", "design, finance and luxury", "writing, media and trade", "healing, hospitality and homes",
-    "performance, mentorship and royal arts", "research, editing and wellness", "law, diplomacy and aesthetics", "investigation, depth psychology and finance",
-    "teaching, philosophy and travel", "administration, real estate and slow industries", "technology, social causes and innovation", "spiritual work, film and oceanic creativity"];
-  return a[s];
-}
-function financeHints(sign: string) {
-  return sign.includes("Vrishabha") || sign.includes("Tula") ? "luxury, beauty and refined craft"
-    : sign.includes("Karka") || sign.includes("Meena") ? "intuition, healing and ancestral property"
-    : sign.includes("Mesha") || sign.includes("Vrishchika") ? "courageous initiative and decisive action"
-    : "patient mastery of a single craft";
-}
-function loveHints(sign: string) {
-  return sign.includes("Karka") || sign.includes("Meena") ? "soft, nurturing presence and emotional depth"
-    : sign.includes("Simha") || sign.includes("Mesha") ? "warm devotion and protective generosity"
-    : sign.includes("Tula") || sign.includes("Vrishabha") ? "beauty, romance and steady tenderness"
-    : "thoughtful, quietly loyal companionship";
-}
-function marriageHints(s: number) {
-  const a = ["independent and warm", "patient and aesthetic", "communicative and playful", "deeply nurturing",
-    "generous and dignified", "discerning and devoted", "graceful and harmonious", "intense and loyal",
-    "philosophical and free-spirited", "ambitious and grounded", "original and humanitarian", "intuitive and gentle"];
-  return a[s];
-}
-function healthHints(s: number) { const v = ["pitta", "kapha", "vata", "kapha", "pitta", "vata", "vata", "pitta", "pitta-vata", "vata-kapha", "vata", "kapha"]; return v[s]; }
-function healthFocus(s: number) { const v = ["the head and eyes", "the throat and neck", "lungs and shoulders", "stomach and chest", "heart and spine", "digestion and intestines", "kidneys and lower back", "reproductive system", "hips and liver", "knees and joints", "ankles and circulation", "feet and lymphatic flow"]; return v[s]; }
-function spiritHints(lord: string) {
-  return ({
-    Sun: "the path of dharma and self-realisation through visible service",
-    Moon: "bhakti — devotional surrender through song, water and the divine mother",
-    Mars: "karma yoga — fierce, disciplined action offered without attachment",
-    Mercury: "jnana yoga — sacred study, inquiry and clear discernment",
-    Jupiter: "the guru-shishya path — learning at the feet of a true teacher",
-    Venus: "tantric beauty — devotion through art, fragrance, sound and sacred relationship",
-    Saturn: "ascetic patience — sustained sadhana, vows and quiet humility",
-    Rahu: "unconventional mysticism — esoteric studies that surprise the orthodox",
-    Ketu: "raja yoga — meditation, renunciation and the inward gaze",
-  } as Record<string, string>)[lord] ?? "a balanced sadhana that honours both discipline and grace";
-}
-function learningHints(lord: string) {
-  return ({ Sun: "structured mastery", Moon: "rhythm, repetition and visual memory", Mars: "challenge and competition",
-    Mercury: "discussion, writing and lateral connections", Jupiter: "wise mentors and sacred texts",
-    Venus: "beauty, art and creative practice", Saturn: "long patient hours and earned depth",
-    Rahu: "unconventional, intensive immersion", Ketu: "silent contemplation and pattern-seeing" } as Record<string, string>)[lord] ?? "a balanced rhythm of study and rest";
-}
-function travelHints(lord: string) {
-  return ({ Sun: "transformative — official journeys yield recognition", Moon: "emotional — water and mother-figures call you",
-    Mars: "energetic — short, decisive trips bring success", Mercury: "frequent and commerce-rich",
-    Jupiter: "pilgrimage-flavoured — temples and teachers", Venus: "luxurious — romantic and aesthetic destinations",
-    Saturn: "long and serious — work-related, abroad or remote", Rahu: "foreign and unconventional — distant lands beckon",
-    Ketu: "inward — retreats, ashrams and mountain solitudes" } as Record<string, string>)[lord] ?? "gentle and restorative";
-}
-function luckyColors(s: number) { const v = ["Crimson and saffron", "Ivory, soft pink and pastel green", "Mint, silver and turquoise", "Pearl white and silver", "Gold and warm orange", "Forest green and earth tones", "Pale blue and rose", "Maroon and deep red", "Marigold yellow and bronze", "Indigo and slate", "Sky blue and lavender", "Sea green and amber"]; return v[s]; }
-function luckyDays(s: number) { const v = ["Tuesday, Sunday", "Friday, Monday", "Wednesday, Friday", "Monday, Thursday", "Sunday, Thursday", "Wednesday, Friday", "Friday, Wednesday", "Tuesday, Saturday", "Thursday, Sunday", "Saturday, Wednesday", "Saturday, Friday", "Thursday, Monday"]; return v[s]; }
 function luckyNumbers(sign: string) {
   return sign.includes("Mesha") ? "9, 1, 6" : sign.includes("Vrishabha") ? "6, 5, 4"
     : sign.includes("Mithuna") ? "5, 3, 7" : sign.includes("Karka") ? "2, 7, 9"
