@@ -1,7 +1,15 @@
-// Lightweight Vedic kundli engine.
-// Uses simplified mean-motion formulas + Lahiri ayanamsa (~24°) to derive a
-// plausible, deterministic sidereal chart from birth date / time / place.
-// Not astronomically exact — suitable for a reading-grade report.
+// Vedic kundli engine. Uses the shared astronomy core (Sun with equation of
+// center, Moon with main lunar perturbations, planets with equation of
+// center, time-varying Lahiri ayanamsa, ascendant from latitude + sidereal
+// time). Accuracy is ~0.1°–0.3° for outer bodies and ~0.2° for the Moon —
+// more than sufficient for sign placement, nakshatra, pada and dasha.
+
+import {
+  julianDay, siderealPositions, ayanamsaLahiri, ascendantLongitude,
+  degToSignDeg, nakshatraOf, geocode, RASHIS, RASHI_LORDS, NAKSHATRAS,
+} from "./astro-core";
+
+export { RASHIS, RASHI_LORDS, NAKSHATRAS };
 
 export interface BirthInput {
   name: string;
@@ -11,103 +19,20 @@ export interface BirthInput {
   place: string;
 }
 
-export const RASHIS = [
-  "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
-  "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
-  "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)",
-];
-
-export const RASHI_LORDS = [
-  "Mars", "Venus", "Mercury", "Moon", "Sun", "Mercury",
-  "Venus", "Mars", "Jupiter", "Saturn", "Saturn", "Jupiter",
-];
-
 export const RASHI_ELEMENT = [
   "Fire", "Earth", "Air", "Water", "Fire", "Earth",
   "Air", "Water", "Fire", "Earth", "Air", "Water",
 ];
-
-export const NAKSHATRAS = [
-  ["Ashwini", "Ketu"], ["Bharani", "Venus"], ["Krittika", "Sun"],
-  ["Rohini", "Moon"], ["Mrigashira", "Mars"], ["Ardra", "Rahu"],
-  ["Punarvasu", "Jupiter"], ["Pushya", "Saturn"], ["Ashlesha", "Mercury"],
-  ["Magha", "Ketu"], ["Purva Phalguni", "Venus"], ["Uttara Phalguni", "Sun"],
-  ["Hasta", "Moon"], ["Chitra", "Mars"], ["Swati", "Rahu"],
-  ["Vishakha", "Jupiter"], ["Anuradha", "Saturn"], ["Jyeshtha", "Mercury"],
-  ["Mula", "Ketu"], ["Purva Ashadha", "Venus"], ["Uttara Ashadha", "Sun"],
-  ["Shravana", "Moon"], ["Dhanishta", "Mars"], ["Shatabhisha", "Rahu"],
-  ["Purva Bhadrapada", "Jupiter"], ["Uttara Bhadrapada", "Saturn"], ["Revati", "Mercury"],
-] as const;
 
 const DASHA_ORDER = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"];
 const DASHA_YEARS: Record<string, number> = {
   Ketu: 7, Venus: 20, Sun: 6, Moon: 10, Mars: 7, Rahu: 18, Jupiter: 16, Saturn: 19, Mercury: 17,
 };
 
-const AYANAMSA = 24.1; // Lahiri approximation
-
-function toJD(date: string, time: string): number {
-  const [Y, M, D] = date.split("-").map(Number);
-  const [h, m] = time.split(":").map(Number);
-  let y = Y, mo = M;
-  if (mo <= 2) { y -= 1; mo += 12; }
-  const A = Math.floor(y / 100);
-  const B = 2 - A + Math.floor(A / 4);
-  const jd = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (mo + 1)) + D + B - 1524.5;
-  return jd + (h + m / 60) / 24;
-}
-
-const norm = (d: number) => ((d % 360) + 360) % 360;
-
-function meanLongitudes(jd: number) {
-  const T = (jd - 2451545.0) / 36525;
-  // Crude mean longitudes (tropical) — accurate enough for sign placement.
-  const sun = norm(280.46 + 0.9856474 * (jd - 2451545.0));
-  const moon = norm(218.316 + 13.176396 * (jd - 2451545.0));
-  const mercury = norm(252.25 + 4.092339 * (jd - 2451545.0));
-  const venus = norm(181.98 + 1.602136 * (jd - 2451545.0));
-  const mars = norm(355.43 + 0.524039 * (jd - 2451545.0));
-  const jupiter = norm(34.35 + 0.083091 * (jd - 2451545.0));
-  const saturn = norm(50.08 + 0.033494 * (jd - 2451545.0));
-  const rahu = norm(125.04 - 0.0529539 * (jd - 2451545.0));
-  const ketu = norm(rahu + 180);
-  return { sun, moon, mercury, venus, mars, jupiter, saturn, rahu, ketu, T };
-}
-
-function sidereal(lon: number) { return norm(lon - AYANAMSA); }
-
-function signOf(lon: number) {
-  const s = Math.floor(lon / 30);
-  const deg = lon - s * 30;
-  const d = Math.floor(deg);
-  const m = Math.floor((deg - d) * 60);
-  return { sign: s, signName: RASHIS[s], deg: `${d}° ${String(m).padStart(2, "0")}'` };
-}
-
-function nakshatraOf(moonLon: number) {
-  const n = Math.floor(moonLon / (360 / 27));
-  const within = moonLon - n * (360 / 27);
-  const pada = Math.floor(within / (360 / 108)) + 1;
-  const [name, lord] = NAKSHATRAS[n];
-  const fraction = within / (360 / 27); // 0..1 elapsed in current nakshatra
-  return { index: n, name, lord, pada, fraction };
-}
-
-function ascendant(jd: number, time: string) {
-  // Very rough lagna: based on local sidereal hour. Each rashi rises for ~2h.
-  const [h, m] = time.split(":").map(Number);
-  const dayFrac = h + m / 60;
-  const sunLon = sidereal(meanLongitudes(jd).sun);
-  const sunSign = Math.floor(sunLon / 30);
-  // sunrise ~06:00 → Sun's sign rises; each 2h → next sign.
-  const offset = Math.floor(((dayFrac - 6 + 24) % 24) / 2);
-  const lagnaSign = (sunSign + offset) % 12;
-  const lagnaDeg = ((dayFrac - 6 + 24) % 2) * 15; // 0..30
-  return { sign: lagnaSign, signName: RASHIS[lagnaSign], deg: `${Math.floor(lagnaDeg)}° ${String(Math.floor((lagnaDeg % 1) * 60)).padStart(2, "0")}'` };
-}
-
 export interface ComputedKundli {
   input: BirthInput;
+  geo: { lat: number; lon: number; tz: number; matched: string };
+  ayanamsa: number;
   planets: { name: string; sanskrit: string; signName: string; deg: string; sign: number; house: number }[];
   lagna: { sign: number; signName: string; deg: string };
   moonSign: string;
@@ -122,16 +47,13 @@ export interface ComputedKundli {
 }
 
 export function compute(input: BirthInput): ComputedKundli {
-  const jd = toJD(input.date, input.time);
-  const m = meanLongitudes(jd);
-
-  const sid = {
-    Sun: sidereal(m.sun), Moon: sidereal(m.moon), Mercury: sidereal(m.mercury),
-    Venus: sidereal(m.venus), Mars: sidereal(m.mars), Jupiter: sidereal(m.jupiter),
-    Saturn: sidereal(m.saturn), Rahu: sidereal(m.rahu), Ketu: sidereal(m.ketu),
-  };
-
-  const lagna = ascendant(jd, input.time);
+  const geo = geocode(input.place || "India");
+  const jd = julianDay(input.date, input.time, geo.tz);
+  const sid = siderealPositions(jd);
+  const ayanamsa = ayanamsaLahiri(jd);
+  const ascSidereal = ((ascendantLongitude(jd, geo.lat, geo.lon) - ayanamsa) % 360 + 360) % 360;
+  const ascInfo = degToSignDeg(ascSidereal);
+  const lagna = { sign: ascInfo.sign, signName: ascInfo.signName, deg: ascInfo.label };
 
   const sanskrit: Record<string, string> = {
     Sun: "Surya", Moon: "Chandra", Mars: "Mangal", Mercury: "Budh",
@@ -139,13 +61,13 @@ export function compute(input: BirthInput): ComputedKundli {
   };
 
   const planets = (Object.keys(sid) as (keyof typeof sid)[]).map((p) => {
-    const s = signOf(sid[p]);
+    const s = degToSignDeg(sid[p]);
     const house = ((s.sign - lagna.sign + 12) % 12) + 1;
-    return { name: p, sanskrit: sanskrit[p], signName: s.signName, deg: s.deg, sign: s.sign, house };
+    return { name: p, sanskrit: sanskrit[p], signName: s.signName, deg: s.label, sign: s.sign, house };
   });
 
-  const moon = signOf(sid.Moon);
-  const sun = signOf(sid.Sun);
+  const moon = degToSignDeg(sid.Moon);
+  const sun = degToSignDeg(sid.Sun);
   const nak = nakshatraOf(sid.Moon);
 
   // Vimshottari Mahadasha sequence from nakshatra lord
@@ -229,6 +151,8 @@ export function compute(input: BirthInput): ComputedKundli {
 
   return {
     input,
+    geo,
+    ayanamsa,
     planets,
     lagna,
     moonSign: moon.signName,
