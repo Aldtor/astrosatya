@@ -12,6 +12,7 @@ import { jsPDF } from "jspdf";
 import { compute, narrate, type BirthInput, type ComputedKundli, type Narrative } from "@/lib/kundli-engine";
 import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
 import { LanguageSelect } from "@/components/site/LanguageSelect";
+import { DateOfBirthPicker } from "@/components/site/DateOfBirthPicker";
 import { findLanguage } from "@/lib/languages";
 
 export const Route = createFileRoute("/kundli")({
@@ -56,7 +57,7 @@ function KundliPage() {
             className="rounded-3xl border border-border bg-card p-8 shadow-lift sm:p-10"
           >
             <div className="grid gap-6 sm:grid-cols-2">
-              <Field label="Full Name"><Input required placeholder="Aanya Sharma" value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
+              <Field label="Full Name"><Input required value={form.name} onChange={(e) => set("name", e.target.value)} /></Field>
               <Field label="Gender">
                 <Select value={form.gender} onValueChange={(v) => set("gender", v)}>
                   <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
@@ -67,10 +68,10 @@ function KundliPage() {
                   </SelectContent>
                 </Select>
               </Field>
-              <Field label="Date of Birth"><Input required type="date" value={form.date} onChange={(e) => set("date", e.target.value)} /></Field>
+              <Field label="Date of Birth"><DateOfBirthPicker required value={form.date} onChange={(v) => set("date", v)} /></Field>
               <Field label="Time of Birth"><Input required type="time" value={form.time} onChange={(e) => set("time", e.target.value)} /></Field>
               <Field label="Place of Birth" className="sm:col-span-2">
-                <PlaceAutocomplete required value={form.place} onChange={(v) => set("place", v)} placeholder="Type your city — Mumbai, Varanasi, London…" />
+                <PlaceAutocomplete required value={form.place} onChange={(v) => set("place", v)} placeholder="" />
               </Field>
               <Field label="Reading Language" className="sm:col-span-2">
                 <LanguageSelect value={form.language || "en"} onChange={(v) => set("language", v)} />
