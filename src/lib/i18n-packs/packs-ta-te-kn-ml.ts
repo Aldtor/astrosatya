@@ -168,9 +168,9 @@ const TA = makePack({
   sentences: taSentences,
 });
 
-const TE = makePack({ ...TA, code: "te", label: "తెలుగు (Telugu)", sentences: teSentences });
-const KN = makePack({ ...TA, code: "kn", label: "ಕನ್ನಡ (Kannada)", sentences: knSentences });
-const ML = makePack({ ...TA, code: "ml", label: "മലയാളം (Malayalam)", sentences: mlSentences });
+const TE: LangPack = { ...TA, code: "te", label: "తెలుగు (Telugu)", sentences: teSentences };
+const KN: LangPack = { ...TA, code: "kn", label: "ಕನ್ನಡ (Kannada)", sentences: knSentences };
+const ML: LangPack = { ...TA, code: "ml", label: "മലയാളം (Malayalam)", sentences: mlSentences };
 
 registerLangPack(TA);
 registerLangPack(TE);
