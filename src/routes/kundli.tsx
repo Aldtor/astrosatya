@@ -392,8 +392,8 @@ function buildPdf(k: ComputedKundli, n: Narrative) {
   // ----- Overview -----
   heading("The reading at a glance", "Overview");
   if (lang.code !== "en") {
-    doc.setFont("times", "italic"); doc.setFontSize(12); doc.setTextColor(150, 100, 30);
-    para(`${lang.greeting} — ${lang.blessing}`);
+    doc.setFont("times", "italic"); doc.setFontSize(11); doc.setTextColor(150, 100, 30);
+    para(`Prepared with a ${lang.english} greeting and blessing — shown on the website. (PDF text remains in English for typographic clarity.)`);
     doc.setFont("times", "normal"); doc.setFontSize(11); doc.setTextColor(55, 45, 35);
   }
   para(n.overview);
