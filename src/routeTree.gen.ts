@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as MatchmakingRouteImport } from './routes/matchmaking'
 import { Route as KundliRouteImport } from './routes/kundli'
 import { Route as HoroscopeRouteImport } from './routes/horoscope'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MatchmakingRoute = MatchmakingRouteImport.update({
   id: '/matchmaking',
   path: '/matchmaking',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/pricing': typeof PricingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/pricing': typeof PricingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/pricing': typeof PricingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/horoscope' | '/kundli' | '/matchmaking'
+  fullPaths: '/' | '/horoscope' | '/kundli' | '/matchmaking' | '/pricing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/horoscope' | '/kundli' | '/matchmaking'
-  id: '__root__' | '/' | '/horoscope' | '/kundli' | '/matchmaking'
+  to: '/' | '/horoscope' | '/kundli' | '/matchmaking' | '/pricing'
+  id: '__root__' | '/' | '/horoscope' | '/kundli' | '/matchmaking' | '/pricing'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +76,18 @@ export interface RootRouteChildren {
   HoroscopeRoute: typeof HoroscopeRoute
   KundliRoute: typeof KundliRoute
   MatchmakingRoute: typeof MatchmakingRoute
+  PricingRoute: typeof PricingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/matchmaking': {
       id: '/matchmaking'
       path: '/matchmaking'
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   HoroscopeRoute: HoroscopeRoute,
   KundliRoute: KundliRoute,
   MatchmakingRoute: MatchmakingRoute,
+  PricingRoute: PricingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
