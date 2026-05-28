@@ -1,15 +1,30 @@
 // Local, offline translations for the kundli narrative.
-// Currently supports English (en) and Hindi (hi). Other languages fall back to English.
-// To add a new language, add an entry to RASHI_TRAITS_I18N, DASHA_NARRATIVE_I18N,
-// NAK_GIFT_I18N, HOUSE_THEME_I18N, GEMSTONES_I18N, and SENTENCES_I18N below.
+// English (en) and Hindi (hi) are defined inline below.
+// Additional Indian-language packs live in ./i18n-packs/ and self-register on import.
 
 import { RASHIS, NAKSHATRAS, RASHI_LORDS } from "./astro-core";
 
-export const SUPPORTED_NARRATION_LANGS = ["English", "हिन्दी (Hindi)"];
+const SUPPORTED: { code: string; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिन्दी (Hindi)" },
+];
 
 export function isSupportedLang(code: string): boolean {
-  return code === "en" || code === "hi";
+  return SUPPORTED.some((s) => s.code === code);
 }
+
+export function getSupportedLangs(): string[] {
+  return SUPPORTED.map((s) => s.label);
+}
+
+// Back-compat export — now a getter list that grows as packs register.
+export const SUPPORTED_NARRATION_LANGS = new Proxy([] as string[], {
+  get(_t, prop) {
+    const arr = SUPPORTED.map((s) => s.label);
+    // @ts-expect-error proxy passthrough
+    return arr[prop];
+  },
+});
 
 function pick<T>(table: Record<string, T>, lang: string): T {
   return table[lang] ?? table.en;
@@ -220,7 +235,7 @@ export const GEMSTONES_I18N: Record<string, Record<string, string>> = {
 
 // ---------------- Hint tables (for body-area bullets) ----------------
 
-type HintTable = {
+export type HintTable = {
   career: string[];           // length 12
   marriage: string[];         // length 12
   healthDosha: string[];      // length 12
@@ -584,3 +599,32 @@ export function localizePlanetEssences(
 
 // Re-export raw rashi/nakshatra lists in case other modules need them
 export { RASHIS, NAKSHATRAS, RASHI_LORDS };
+
+// ---------------- Pack registry ----------------
+
+export interface LangPack {
+  code: string;
+  label: string;
+  rashiTraits: Record<string, string>;
+  dasha: Record<string, string>;
+  nakGift: Record<string, string>;
+  houseTheme: string[];
+  gemstones: Record<string, string>;
+  hints: HintTable;
+  sentences: SentenceBuilder;
+}
+
+export function registerLangPack(p: LangPack): void {
+  if (SUPPORTED.some((s) => s.code === p.code)) return;
+  SUPPORTED.push({ code: p.code, label: p.label });
+  RASHI_TRAITS_I18N[p.code] = p.rashiTraits;
+  DASHA_NARRATIVE_I18N[p.code] = p.dasha;
+  NAK_GIFT_I18N[p.code] = p.nakGift;
+  HOUSE_THEME_I18N[p.code] = p.houseTheme;
+  GEMSTONES_I18N[p.code] = p.gemstones;
+  HINTS_I18N[p.code] = p.hints;
+  SENTENCES_I18N[p.code] = p.sentences;
+}
+
+// Self-register all additional Indian language packs.
+import "./i18n-packs/register";
