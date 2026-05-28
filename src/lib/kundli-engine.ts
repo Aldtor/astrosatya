@@ -17,6 +17,7 @@ export interface BirthInput {
   date: string; // YYYY-MM-DD
   time: string; // HH:MM
   place: string;
+  language?: string; // ISO-ish code, e.g. "en", "hi", "ta"
 }
 
 export const RASHI_ELEMENT = [
