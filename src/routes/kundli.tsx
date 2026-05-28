@@ -379,6 +379,10 @@ function buildPdf(k: ComputedKundli, n: Narrative) {
   doc.setFontSize(11); doc.setTextColor(120, 95, 60);
   doc.text(`${k.input.date}  ·  ${k.input.time}  ·  ${k.input.place || "—"}`, W / 2, 372, { align: "center" });
 
+  const lang = findLanguage(k.input.language || "en");
+  doc.setFontSize(10); doc.setTextColor(150, 110, 40);
+  doc.text(`Reading language: ${lang.english}`, W / 2, 394, { align: "center" });
+
   doc.setFontSize(10); doc.setTextColor(150, 120, 80);
   doc.text("An eighteen-page personalised reading, prepared with reverence.", W / 2, H - 110, { align: "center" });
   doc.text("AstroSatya  ·  ancient wisdom, gently modern", W / 2, H - 90, { align: "center" });
@@ -387,6 +391,11 @@ function buildPdf(k: ComputedKundli, n: Narrative) {
 
   // ----- Overview -----
   heading("The reading at a glance", "Overview");
+  if (lang.code !== "en") {
+    doc.setFont("times", "italic"); doc.setFontSize(12); doc.setTextColor(150, 100, 30);
+    para(`${lang.greeting} — ${lang.blessing}`);
+    doc.setFont("times", "normal"); doc.setFontSize(11); doc.setTextColor(55, 45, 35);
+  }
   para(n.overview);
   para("This report distills your chart into a journey across personality, relationships, work, " +
     "wealth, health, family, learning, travel and spiritual life. Read it slowly. Return to it across seasons.");
