@@ -9,6 +9,7 @@ import { SectionHeading } from "@/routes/index";
 import { computeMatch, type Partner, type MatchResult } from "@/lib/matchmaking-engine";
 import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
 import { LanguageSelect } from "@/components/site/LanguageSelect";
+import { DateOfBirthPicker } from "@/components/site/DateOfBirthPicker";
 import { findLanguage } from "@/lib/languages";
 
 export const Route = createFileRoute("/matchmaking")({
@@ -78,13 +79,13 @@ function PartnerForm({ title, value, onChange }: { title: string; value: Partner
     <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
       <h3 className="font-display text-2xl">{title}</h3>
       <div className="mt-6 grid gap-5">
-        <Field label="Name"><Input required placeholder="Name" value={value.name} onChange={(e) => set("name", e.target.value)} /></Field>
+        <Field label="Name"><Input required value={value.name} onChange={(e) => set("name", e.target.value)} /></Field>
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Date of Birth"><Input required type="date" value={value.date} onChange={(e) => set("date", e.target.value)} /></Field>
+          <Field label="Date of Birth"><DateOfBirthPicker required value={value.date} onChange={(v) => set("date", v)} /></Field>
           <Field label="Time"><Input required type="time" value={value.time} onChange={(e) => set("time", e.target.value)} /></Field>
         </div>
         <Field label="Place of Birth">
-          <PlaceAutocomplete required value={value.place} onChange={(v) => set("place", v)} placeholder="Type a city — Delhi, Chennai, Toronto…" />
+          <PlaceAutocomplete required value={value.place} onChange={(v) => set("place", v)} placeholder="" />
         </Field>
       </div>
     </div>
