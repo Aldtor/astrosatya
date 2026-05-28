@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Sparkles, Download, FileText, Lock, Star, Heart, Briefcase, Coins, Activity, Home, BookOpen, Plane, Flame, CalendarRange, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
 import { LanguageSelect } from "@/components/site/LanguageSelect";
 import { DateOfBirthPicker } from "@/components/site/DateOfBirthPicker";
 import { findLanguage } from "@/lib/languages";
+import { translateContent } from "@/lib/translate.functions";
 
 export const Route = createFileRoute("/kundli")({
   head: () => ({
@@ -28,8 +30,10 @@ export const Route = createFileRoute("/kundli")({
 });
 
 function KundliPage() {
-  const [result, setResult] = useState<{ k: ComputedKundli; n: Narrative } | null>(null);
+  const [result, setResult] = useState<{ k: ComputedKundli; n: Narrative; nLocal: Narrative; planetEssencesLocal: string[] } | null>(null);
+  const [translating, setTranslating] = useState(false);
   const [form, setForm] = useState<BirthInput>({ name: "", gender: "", date: "", time: "", place: "", language: "en" });
+  const translate = useServerFn(translateContent);
 
   const set = <K extends keyof BirthInput>(k: K, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -48,11 +52,32 @@ function KundliPage() {
       <section className="py-20">
         <div className="mx-auto max-w-3xl px-5 sm:px-8">
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const k = compute(form);
-              setResult({ k, n: narrate(k) });
+              const n = narrate(k);
+              const planetEssences = k.planets.map((p) => p.essence);
+              const lang = findLanguage(form.language || "en");
+              setResult({ k, n, nLocal: n, planetEssencesLocal: planetEssences });
               setTimeout(() => window.scrollTo({ top: window.innerHeight * 0.85, behavior: "smooth" }), 80);
+              if (lang.code !== "en") {
+                setTranslating(true);
+                try {
+                  const out = await translate({
+                    data: {
+                      languageCode: lang.code,
+                      languageName: `${lang.english} (${lang.native})`,
+                      payload: { narrative: n, planetEssences },
+                    },
+                  });
+                  const o = out as { narrative: Narrative; planetEssences: string[] };
+                  setResult({ k, n, nLocal: o.narrative, planetEssencesLocal: o.planetEssences });
+                } catch (err) {
+                  console.error("Translation failed:", err);
+                } finally {
+                  setTranslating(false);
+                }
+              }
             }}
             className="rounded-3xl border border-border bg-card p-8 shadow-lift sm:p-10"
           >
@@ -88,7 +113,7 @@ function KundliPage() {
         </div>
       </section>
 
-      {result && <KundliResult k={result.k} n={result.n} />}
+      {result && <KundliResult k={result.k} n={result.nLocal} nEnglish={result.n} planetEssences={result.planetEssencesLocal} translating={translating} />}
     </main>
   );
 }
