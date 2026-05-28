@@ -1,7 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Twitter, Youtube, Facebook } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import logo from "@/assets/astro-logo.png";
 
 export function Footer() {
@@ -22,40 +19,12 @@ export function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[oklch(0.78_0.025_75)]">
               Ancient Vedic wisdom, thoughtfully designed for modern life. Discover your cosmic truth.
             </p>
-            <div className="mt-6 flex gap-3">
-              {[Instagram, Twitter, Youtube, Facebook].map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  className="grid h-9 w-9 place-items-center rounded-full border border-white/10 transition-colors hover:border-[oklch(0.78_0.12_75)] hover:text-[oklch(0.85_0.12_75)]"
-                >
-                  <Icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 md:col-span-5 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-3">
             <FooterCol title="Explore" links={[["Kundli", "/kundli"], ["Horoscope", "/horoscope"], ["Matchmaking", "/matchmaking"]]} />
             <FooterCol title="Account" links={[["Dashboard", "/dashboard"], ["Sign in", "/login"]]} />
             <FooterCol title="Company" links={[["About", "/about"], ["Contact", "/contact"], ["Privacy", "#"]]} />
-          </div>
-
-          <div className="md:col-span-3">
-            <h4 className="font-display text-lg text-[oklch(0.97_0.018_85)]">Weekly cosmic letter</h4>
-            <p className="mt-2 text-sm text-[oklch(0.78_0.025_75)]">
-              Gentle guidance delivered every Sunday.
-            </p>
-            <form className="mt-4 flex gap-2" onSubmit={(e) => e.preventDefault()}>
-              <Input
-                type="email"
-                placeholder="you@stars.com"
-                className="border-white/15 bg-white/5 text-[oklch(0.97_0.018_85)] placeholder:text-[oklch(0.65_0.02_75)]"
-              />
-              <Button type="submit" className="bg-gradient-gold text-[oklch(0.18_0_0)] hover:opacity-95">
-                Join
-              </Button>
-            </form>
           </div>
         </div>
 
