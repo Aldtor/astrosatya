@@ -1,15 +1,30 @@
 // Local, offline translations for the kundli narrative.
-// Currently supports English (en) and Hindi (hi). Other languages fall back to English.
-// To add a new language, add an entry to RASHI_TRAITS_I18N, DASHA_NARRATIVE_I18N,
-// NAK_GIFT_I18N, HOUSE_THEME_I18N, GEMSTONES_I18N, and SENTENCES_I18N below.
+// English (en) and Hindi (hi) are defined inline below.
+// Additional Indian-language packs live in ./i18n-packs/ and self-register on import.
 
 import { RASHIS, NAKSHATRAS, RASHI_LORDS } from "./astro-core";
 
-export const SUPPORTED_NARRATION_LANGS = ["English", "हिन्दी (Hindi)"];
+const SUPPORTED: { code: string; label: string }[] = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिन्दी (Hindi)" },
+];
 
 export function isSupportedLang(code: string): boolean {
-  return code === "en" || code === "hi";
+  return SUPPORTED.some((s) => s.code === code);
 }
+
+export function getSupportedLangs(): string[] {
+  return SUPPORTED.map((s) => s.label);
+}
+
+// Back-compat export — now a getter list that grows as packs register.
+export const SUPPORTED_NARRATION_LANGS = new Proxy([] as string[], {
+  get(_t, prop) {
+    const arr = SUPPORTED.map((s) => s.label);
+    // @ts-expect-error proxy passthrough
+    return arr[prop];
+  },
+});
 
 function pick<T>(table: Record<string, T>, lang: string): T {
   return table[lang] ?? table.en;
