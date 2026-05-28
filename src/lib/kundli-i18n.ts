@@ -235,7 +235,7 @@ export const GEMSTONES_I18N: Record<string, Record<string, string>> = {
 
 // ---------------- Hint tables (for body-area bullets) ----------------
 
-type HintTable = {
+export type HintTable = {
   career: string[];           // length 12
   marriage: string[];         // length 12
   healthDosha: string[];      // length 12
