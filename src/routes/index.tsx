@@ -379,6 +379,7 @@ function FAQ() {
 export function SectionHeading({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle?: string }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
+      <MandalaIcon size={36} className="mx-auto mb-4 text-bronze/60" />
       <span className="ornament-divider mx-auto max-w-[220px] text-xs uppercase tracking-[0.3em] text-bronze">{eyebrow}</span>
       <h2 className="mt-6 font-display text-4xl leading-tight text-balance sm:text-5xl">{title}</h2>
       {subtitle && <p className="mt-4 text-warmbrown/85 leading-relaxed">{subtitle}</p>}
