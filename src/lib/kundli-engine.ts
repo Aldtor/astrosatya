@@ -34,7 +34,12 @@ export interface ComputedKundli {
   input: BirthInput;
   geo: { lat: number; lon: number; tz: number; matched: string };
   ayanamsa: number;
-  planets: { name: string; sanskrit: string; signName: string; deg: string; sign: number; house: number }[];
+  planets: {
+    name: string; sanskrit: string; signName: string; deg: string;
+    sign: number; house: number;
+    nakshatra: string; nakLord: string; pada: number;
+    dignity: string; essence: string;
+  }[];
   lagna: { sign: number; signName: string; deg: string };
   moonSign: string;
   sunSign: string;
@@ -62,9 +67,17 @@ export function compute(input: BirthInput): ComputedKundli {
   };
 
   const planets = (Object.keys(sid) as (keyof typeof sid)[]).map((p) => {
-    const s = degToSignDeg(sid[p]);
+    const lon = sid[p];
+    const s = degToSignDeg(lon);
     const house = ((s.sign - lagna.sign + 12) % 12) + 1;
-    return { name: p, sanskrit: sanskrit[p], signName: s.signName, deg: s.label, sign: s.sign, house };
+    const nk = nakshatraOf(lon);
+    return {
+      name: p, sanskrit: sanskrit[p],
+      signName: s.signName, deg: s.label, sign: s.sign, house,
+      nakshatra: nk.name, nakLord: nk.lord, pada: nk.pada,
+      dignity: dignityOf(p, s.sign),
+      essence: planetEssence(p, s.sign, house),
+    };
   });
 
   const moon = degToSignDeg(sid.Moon);
