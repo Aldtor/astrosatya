@@ -18,5 +18,10 @@ export default defineConfig({
   // deploys work without any extra Vercel project settings.
   nitro: {
     preset: "vercel",
+    output: {
+      dir: ".vercel/output",
+      publicDir: ".vercel/output/static",
+      serverDir: ".vercel/output/functions/__server.func",
+    },
   },
 });
