@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  Sparkles, Moon, Heart, Clock, Shield, BookOpen,
-  ArrowRight, Check, Star, Sun,
+  Sparkles, ArrowRight, Check, Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  LotusIcon, SuryaIcon, MilanIcon, DashaIcon, RakshaIcon, GranthIcon,
+  MandalaIcon, ZodiacGlyph,
+} from "@/components/site/SacredIcons";
 import zodiacWheel from "@/assets/zodiac-wheel.png";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -39,7 +42,7 @@ function Home() {
 /* ---------------- Hero ---------------- */
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden paper-grain">
       <div
         className="absolute inset-0 -z-10 bg-gradient-sky"
         style={{
@@ -73,7 +76,7 @@ function Hero() {
             Vedic · Since the stars
           </span>
           <h1 className="font-display text-5xl leading-[1.05] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            Discover Your <em className="not-italic text-[oklch(0.55_0.13_55)]">Cosmic</em> Truth
+            Discover Your <em className="not-italic ink-underline text-[oklch(0.55_0.13_55)]">Cosmic</em> Truth
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-warmbrown">
             Ancient Vedic wisdom thoughtfully designed for modern life. Explore your
@@ -130,12 +133,12 @@ function Hero() {
 
 /* ---------------- Features ---------------- */
 const FEATURES = [
-  { icon: Sparkles, title: "Kundli Generator", desc: "Precise Vedic birth chart with detailed planetary positions and houses." },
-  { icon: Sun, title: "Daily Horoscope", desc: "Personalised guidance for love, career, health and well-being." },
-  { icon: Heart, title: "Matchmaking", desc: "36-guna Ashtakoot compatibility — emotional, spiritual and karmic." },
-  { icon: Clock, title: "Dasha Timeline", desc: "Your Vimshottari Dasha periods, beautifully visualised across years." },
-  { icon: Shield, title: "Dosha Analysis", desc: "Mangal, Kaal Sarp & Sade Sati insights with calm remedies." },
-  { icon: BookOpen, title: "Saved Reports", desc: "Your charts, predictions and journals — gently archived." },
+  { icon: LotusIcon,  title: "Kundli Generator", desc: "Precise Vedic birth chart with detailed planetary positions and houses." },
+  { icon: SuryaIcon,  title: "Daily Horoscope", desc: "Personalised guidance for love, career, health and well-being." },
+  { icon: MilanIcon,  title: "Matchmaking",     desc: "36-guna Ashtakoot compatibility — emotional, spiritual and karmic." },
+  { icon: DashaIcon,  title: "Dasha Timeline",  desc: "Your Vimshottari Dasha periods, beautifully visualised across years." },
+  { icon: RakshaIcon, title: "Dosha Analysis",  desc: "Mangal, Kaal Sarp & Sade Sati insights with calm remedies." },
+  { icon: GranthIcon, title: "Saved Reports",   desc: "Your charts, predictions and journals — gently archived." },
 ];
 
 function Features() {
@@ -147,11 +150,12 @@ function Features() {
           {FEATURES.map((f, i) => (
             <div
               key={f.title}
-              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lift"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-7 shadow-soft transition-all hover:-translate-y-1 hover:shadow-lift paper-grain"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-gradient-gold shadow-gold">
-                <f.icon className="h-5 w-5 text-primary-foreground" />
+              <div className="relative grid h-14 w-14 place-items-center rounded-2xl border border-bronze/30 bg-ivory text-bronze">
+                <f.icon size={30} />
+                <span className="absolute -right-1 -top-1 h-2 w-2 rotate-45 bg-gradient-gold" aria-hidden />
               </div>
               <h3 className="mt-6 font-display text-2xl text-charcoal">{f.title}</h3>
               <p className="mt-2 text-warmbrown/85 leading-relaxed">{f.desc}</p>
@@ -207,13 +211,15 @@ function HoroscopePreview() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading eyebrow="Today's reading" title="A whisper from the cosmos" />
         <div className="mt-12 grid gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-          {SIGNS.map(([name, glyph]) => (
+          {SIGNS.map(([name]) => (
             <Link
               key={name}
               to="/horoscope"
               className="group flex flex-col items-center rounded-2xl border border-border bg-card p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-lift"
             >
-              <span className="font-display text-3xl text-saffron transition-transform group-hover:scale-110">{glyph}</span>
+              <span className="text-bronze transition-transform group-hover:scale-110">
+                <ZodiacGlyph sign={name} size={34} />
+              </span>
               <span className="mt-2 text-sm text-warmbrown">{name}</span>
             </Link>
           ))}
