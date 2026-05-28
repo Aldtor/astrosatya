@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { ReactElement, SVGProps } from "react";
 
 /**
  * Hand-drawn, line-art sacred iconography for AstroSatya.
@@ -118,7 +118,7 @@ export const ZodiacGlyph = ({
   sign,
   ...p
 }: IconProps & { sign: string }) => {
-  const paths: Record<string, JSX.Element> = {
+  const paths: Record<string, ReactElement> = {
     Aries: <path d="M14 30c0-8 4-12 10-12s10 4 10 12M14 30c0-4-2-6-4-7M34 30c0-4 2-6 4-7" />,
     Taurus: <><circle cx="24" cy="30" r="6" /><path d="M14 16c2 4 6 6 10 6s8-2 10-6" /></>,
     Gemini: <><path d="M14 12h20M14 36h20" /><path d="M18 12v24M30 12v24" /></>,
