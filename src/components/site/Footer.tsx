@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { Sparkles, Instagram, Twitter, Youtube, Facebook } from "lucide-react";
+import { Instagram, Twitter, Youtube, Facebook } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/astro-logo.png";
 
 export function Footer() {
   return (
@@ -16,10 +17,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-4">
             <Link to="/" className="flex items-center gap-2">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-gradient-gold">
-                <Sparkles className="h-4 w-4 text-[oklch(0.18_0_0)]" />
-              </span>
-              <span className="font-display text-xl text-[oklch(0.97_0.018_85)]">AstroSatya</span>
+              <img src={logo} alt="AstroSatya" className="h-10 w-auto" width={1024} height={1024} />
             </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-[oklch(0.78_0.025_75)]">
               Ancient Vedic wisdom, thoughtfully designed for modern life. Discover your cosmic truth.
