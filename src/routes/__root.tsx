@@ -4,7 +4,6 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -119,17 +118,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const hideChrome = pathname.startsWith("/dashboard") || pathname === "/login";
-
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen flex-col">
-        {!hideChrome && <Header />}
+        <Header />
         <div className="flex-1">
           <Outlet />
         </div>
-        {!hideChrome && <Footer />}
+        <Footer />
       </div>
     </QueryClientProvider>
   );

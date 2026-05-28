@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { SectionHeading } from "@/routes/index";
 import { computeMatch, type Partner, type MatchResult } from "@/lib/matchmaking-engine";
+import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
+import { LanguageSelect } from "@/components/site/LanguageSelect";
+import { findLanguage } from "@/lib/languages";
 
 export const Route = createFileRoute("/matchmaking")({
   head: () => ({
@@ -24,6 +27,7 @@ function MatchPage() {
   const blank: Partner = { name: "", date: "", time: "", place: "" };
   const [a, setA] = useState<Partner>(blank);
   const [b, setB] = useState<Partner>(blank);
+  const [language, setLanguage] = useState<string>("en");
   const [result, setResult] = useState<MatchResult | null>(null);
   return (
     <main className="bg-ivory">
@@ -49,6 +53,11 @@ function MatchPage() {
           >
             <PartnerForm title="Partner One" value={a} onChange={setA} />
             <PartnerForm title="Partner Two" value={b} onChange={setB} />
+            <div className="md:col-span-2 rounded-3xl border border-border bg-card p-6 shadow-soft">
+              <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Reading Language</Label>
+              <LanguageSelect value={language} onChange={setLanguage} />
+              <p className="mt-2 text-xs text-warmbrown/70">Choose your preferred language for greetings. Search by English or native script.</p>
+            </div>
             <div className="md:col-span-2 text-center">
               <Button type="submit" size="lg" className="bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
                 <Heart className="mr-2 h-4 w-4" /> Check Compatibility
@@ -58,7 +67,7 @@ function MatchPage() {
         </div>
       </section>
 
-      {result && <Result r={result} />}
+      {result && <Result r={result} language={language} />}
     </main>
   );
 }
@@ -74,7 +83,9 @@ function PartnerForm({ title, value, onChange }: { title: string; value: Partner
           <Field label="Date of Birth"><Input required type="date" value={value.date} onChange={(e) => set("date", e.target.value)} /></Field>
           <Field label="Time"><Input required type="time" value={value.time} onChange={(e) => set("time", e.target.value)} /></Field>
         </div>
-        <Field label="Place of Birth"><Input required placeholder="City, Country" value={value.place} onChange={(e) => set("place", e.target.value)} /></Field>
+        <Field label="Place of Birth">
+          <PlaceAutocomplete required value={value.place} onChange={(v) => set("place", v)} placeholder="Type a city — Delhi, Chennai, Toronto…" />
+        </Field>
       </div>
     </div>
   );
@@ -89,7 +100,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function Result({ r }: { r: MatchResult }) {
+function Result({ r, language }: { r: MatchResult; language: string }) {
+  const lang = findLanguage(language);
   const score = r.total;
   const pct = r.percent;
   const circumference = 2 * Math.PI * 80;
@@ -98,7 +110,11 @@ function Result({ r }: { r: MatchResult }) {
   return (
     <section className="border-t border-border/60 bg-cream/40 py-20 animate-rise">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <SectionHeading eyebrow="Ashtakoot Guna Milan" title={r.verdict} />
+        <SectionHeading eyebrow={`${lang.greeting} · Ashtakoot Guna Milan`} title={r.verdict} />
+        <p className="mt-4 text-center text-sm text-warmbrown/80">
+          Presented in <span className="font-medium text-charcoal">{lang.english}</span>
+          {lang.code !== "en" && <> · <span className="font-display">{lang.native}</span></>}
+        </p>
 
         <div className="mt-14 grid items-center gap-12 lg:grid-cols-3">
           <div className="relative mx-auto aspect-square w-full max-w-[280px]">

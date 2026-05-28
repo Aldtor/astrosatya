@@ -40,9 +40,6 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/login">Sign in</Link>
-          </Button>
           <Button asChild size="sm" className="bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
             <Link to="/kundli">Generate Kundli</Link>
           </Button>
@@ -70,12 +67,9 @@ export function Header() {
                 {n.label}
               </Link>
             ))}
-            <div className="mt-2 flex gap-2 px-3">
-              <Button asChild variant="outline" className="flex-1">
-                <Link to="/login" onClick={() => setOpen(false)}>Sign in</Link>
-              </Button>
-              <Button asChild className="flex-1 bg-gradient-gold text-primary-foreground">
-                <Link to="/kundli" onClick={() => setOpen(false)}>Kundli</Link>
+            <div className="mt-2 px-3">
+              <Button asChild className="w-full bg-gradient-gold text-primary-foreground">
+                <Link to="/kundli" onClick={() => setOpen(false)}>Generate Kundli</Link>
               </Button>
             </div>
           </div>

@@ -21,9 +21,8 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 md:col-span-8 md:grid-cols-2">
             <FooterCol title="Explore" links={[["Kundli", "/kundli"], ["Horoscope", "/horoscope"], ["Matchmaking", "/matchmaking"]]} />
-            <FooterCol title="Account" links={[["Dashboard", "/dashboard"], ["Sign in", "/login"]]} />
             <FooterCol title="Company" links={[["About", "/about"], ["Contact", "/contact"], ["Privacy", "#"]]} />
           </div>
         </div>
