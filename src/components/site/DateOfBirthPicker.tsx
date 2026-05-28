@@ -43,8 +43,8 @@ export function DateOfBirthPicker({ value, onChange, required }: Props) {
             }
           }}
           captionLayout="dropdown"
-          fromYear={1925}
-          toYear={new Date().getFullYear()}
+          startMonth={new Date(1925, 0)}
+          endMonth={new Date(new Date().getFullYear(), 11)}
           defaultMonth={selected ?? new Date(1995, 0, 1)}
           disabled={(d) => d > new Date() || d < new Date("1925-01-01")}
           initialFocus
