@@ -127,9 +127,9 @@ function Field({ label, children, className = "" }: { label: string; children: R
   );
 }
 
-function KundliResult({ k, n }: { k: ComputedKundli; n: Narrative }) {
+function KundliResult({ k, n, nEnglish, planetEssences, translating }: { k: ComputedKundli; n: Narrative; nEnglish: Narrative; planetEssences: string[]; translating: boolean }) {
   const lang = findLanguage(k.input.language || "en");
-  const handleDownload = () => buildPdf(k, n);
+  const handleDownload = () => buildPdf(k, nEnglish);
 
   return (
     <section className="border-t border-border/60 bg-cream/40 py-20 animate-rise">
@@ -141,6 +141,7 @@ function KundliResult({ k, n }: { k: ComputedKundli; n: Narrative }) {
         <p className="mt-4 text-center text-sm text-warmbrown/80">
           Reading prepared in <span className="font-medium text-charcoal">{lang.english}</span>
           {lang.code !== "en" && <> · <span className="font-display">{lang.native}</span></>}
+          {translating && <span className="ml-2 inline-flex items-center gap-1 text-bronze"><Sparkles className="h-3 w-3 animate-pulse" /> translating…</span>}
         </p>
 
         {/* Chart + at-a-glance */}
@@ -175,23 +176,42 @@ function KundliResult({ k, n }: { k: ComputedKundli; n: Narrative }) {
         {/* Planetary positions table */}
         <div className="mt-16 rounded-3xl border border-border bg-card p-8 shadow-soft">
           <h3 className="font-display text-2xl">Planetary positions · Graha Sthiti</h3>
-          <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+          <p className="mt-2 text-sm text-warmbrown/80">Where each graha sits in your chart, the nakshatra it touches, and a one-line reading of its mood.</p>
+          <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
             <table className="w-full text-sm">
               <thead className="bg-cream/60 text-xs uppercase tracking-wider text-warmbrown/80">
                 <tr>
                   <th className="px-4 py-3 text-left">Planet</th>
                   <th className="px-4 py-3 text-left">Rashi</th>
                   <th className="px-4 py-3 text-left">Degree</th>
-                  <th className="px-4 py-3 text-right">House</th>
+                  <th className="px-3 py-3 text-center">House</th>
+                  <th className="px-4 py-3 text-left">Nakshatra · Pada</th>
+                  <th className="px-4 py-3 text-left">Lord</th>
+                  <th className="px-4 py-3 text-left">Dignity</th>
                 </tr>
               </thead>
               <tbody>
-                {k.planets.map((p) => (
-                  <tr key={p.name} className="border-t border-border/60">
-                    <td className="px-4 py-3 font-medium text-charcoal">{p.name} <span className="text-warmbrown/60">({p.sanskrit})</span></td>
+                {k.planets.map((p, i) => (
+                  <tr key={p.name} className="border-t border-border/60 align-top">
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-charcoal">{p.name} <span className="text-warmbrown/60">({p.sanskrit})</span></div>
+                      <div className="mt-1 text-xs italic text-warmbrown/75 max-w-[18rem]">{planetEssences[i] ?? p.essence}</div>
+                    </td>
                     <td className="px-4 py-3 text-warmbrown">{p.signName.split(" ")[0]}</td>
                     <td className="px-4 py-3 font-mono text-warmbrown">{p.deg}</td>
-                    <td className="px-4 py-3 text-right font-display text-saffron">{p.house}</td>
+                    <td className="px-3 py-3 text-center font-display text-saffron">{p.house}</td>
+                    <td className="px-4 py-3 text-warmbrown">{p.nakshatra} · {p.pada}</td>
+                    <td className="px-4 py-3 text-warmbrown">{p.nakLord}</td>
+                    <td className="px-4 py-3">
+                      <span className={
+                        "rounded-full px-2 py-0.5 text-[11px] font-medium " +
+                        (p.dignity === "Exalted" ? "bg-emerald-100 text-emerald-800" :
+                         p.dignity === "Debilitated" ? "bg-rose-100 text-rose-800" :
+                         p.dignity === "Own sign" ? "bg-saffron/15 text-saffron" :
+                         p.dignity === "Shadow" ? "bg-zinc-200 text-zinc-700" :
+                         "bg-cream text-warmbrown")
+                      }>{p.dignity}</span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
