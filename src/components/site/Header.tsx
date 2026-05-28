@@ -23,7 +23,7 @@ export function Header() {
         <Link to="/" className="flex items-center gap-3 group" aria-label="AstroSatya home">
           <img src={logo} alt="AstroSatya — Discover Your Cosmic Truth" className="h-12 w-auto" />
           <span className="font-display text-xl tracking-tight text-foreground">
-            Astro<span className="text-saffron" style={{ fontFamily: '"Hind", "Noto Sans Devanagari", sans-serif', fontWeight: 600 }}>सत्य</span>
+            Astro<span className="text-saffron" style={{ fontFamily: '"Hind", "Noto Sans Devanagari", sans-serif', fontWeight: 600 }}>सत्या</span>
           </span>
         </Link>
 
