@@ -220,3 +220,26 @@
 .animate-slow-spin { animation: slow-spin 120s linear infinite; }
 .animate-shimmer { animation: shimmer 4s ease-in-out infinite; }
 .animate-rise { animation: rise 0.7s ease-out both; }
+
+/* Paper grain — adds tactile, handcrafted texture */
+.paper-grain {
+  position: relative;
+}
+.paper-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.25  0 0 0 0 0.15  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* Hand-drawn ink underline — used to mark headlines */
+.ink-underline {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='14' viewBox='0 0 200 14'><path d='M2 8 C 40 2, 90 12, 198 6' stroke='%23C9A86A' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.5em;
+  padding-bottom: 0.15em;
+}
