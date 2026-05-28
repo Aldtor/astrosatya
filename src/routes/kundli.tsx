@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Sparkles, Download, FileText, Lock } from "lucide-react";
+import { Sparkles, Download, FileText, Lock, Star, Heart, Briefcase, Coins, Activity, Home, BookOpen, Plane, Flame, CalendarRange, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,9 @@ import {
 } from "@/components/ui/select";
 import { jsPDF } from "jspdf";
 import { compute, narrate, type BirthInput, type ComputedKundli, type Narrative } from "@/lib/kundli-engine";
+import { PlaceAutocomplete } from "@/components/site/PlaceAutocomplete";
+import { LanguageSelect } from "@/components/site/LanguageSelect";
+import { findLanguage } from "@/lib/languages";
 
 export const Route = createFileRoute("/kundli")({
   head: () => ({
@@ -25,7 +28,7 @@ export const Route = createFileRoute("/kundli")({
 
 function KundliPage() {
   const [result, setResult] = useState<{ k: ComputedKundli; n: Narrative } | null>(null);
-  const [form, setForm] = useState<BirthInput>({ name: "", gender: "", date: "", time: "", place: "" });
+  const [form, setForm] = useState<BirthInput>({ name: "", gender: "", date: "", time: "", place: "", language: "en" });
 
   const set = <K extends keyof BirthInput>(k: K, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -67,14 +70,18 @@ function KundliPage() {
               <Field label="Date of Birth"><Input required type="date" value={form.date} onChange={(e) => set("date", e.target.value)} /></Field>
               <Field label="Time of Birth"><Input required type="time" value={form.time} onChange={(e) => set("time", e.target.value)} /></Field>
               <Field label="Place of Birth" className="sm:col-span-2">
-                <Input required placeholder="Varanasi, India" value={form.place} onChange={(e) => set("place", e.target.value)} />
+                <PlaceAutocomplete required value={form.place} onChange={(v) => set("place", v)} placeholder="Type your city — Mumbai, Varanasi, London…" />
+              </Field>
+              <Field label="Reading Language" className="sm:col-span-2">
+                <LanguageSelect value={form.language || "en"} onChange={(v) => set("language", v)} />
+                <p className="mt-2 text-xs text-warmbrown/70">Search by English or native script. Includes all 22 official Indian languages.</p>
               </Field>
             </div>
             <Button type="submit" size="lg" className="mt-8 w-full bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
               <Sparkles className="mr-2 h-4 w-4" /> Generate My Kundli
             </Button>
             <p className="mt-4 text-center text-xs text-warmbrown/70">
-              Your details are private, encrypted and used only for your reading.
+              No sign-up needed. Your details stay in your browser and are used only for this reading.
             </p>
           </form>
         </div>
@@ -95,13 +102,23 @@ function Field({ label, children, className = "" }: { label: string; children: R
 }
 
 function KundliResult({ k, n }: { k: ComputedKundli; n: Narrative }) {
+  const lang = findLanguage(k.input.language || "en");
   const handleDownload = () => buildPdf(k, n);
+
   return (
     <section className="border-t border-border/60 bg-cream/40 py-20 animate-rise">
-      <div className="mx-auto max-w-5xl px-5 sm:px-8">
-        <SectionHeading eyebrow={`Namaste, ${k.input.name || "Seeker"}`} title="Your kundli has been prepared" />
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+        <SectionHeading
+          eyebrow={`${lang.greeting}, ${k.input.name || "Seeker"}`}
+          title="Your kundli has been prepared"
+        />
+        <p className="mt-4 text-center text-sm text-warmbrown/80">
+          Reading prepared in <span className="font-medium text-charcoal">{lang.english}</span>
+          {lang.code !== "en" && <> · <span className="font-display">{lang.native}</span></>}
+        </p>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-[1fr_1.1fr] items-center">
+        {/* Chart + at-a-glance */}
+        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr] items-start">
           <NorthIndianChart />
           <div className="rounded-3xl border border-border bg-card p-8 shadow-lift sm:p-10">
             <div className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-gold shadow-gold">
@@ -117,16 +134,165 @@ function KundliResult({ k, n }: { k: ComputedKundli; n: Narrative }) {
               <Meta label="Current Dasha" value={`${k.currentDasha.lord} (${Math.floor(k.currentDasha.from)}–${Math.floor(k.currentDasha.to)})`} />
               <Meta label="Yogas" value={`${k.yogas.length} active`} />
             </dl>
+            <p className="mt-6 rounded-xl bg-cream/60 p-4 font-display text-base italic text-charcoal">
+              {lang.blessing}
+            </p>
             <Button onClick={handleDownload} size="lg" className="mt-7 w-full bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
-              <Download className="mr-2 h-4 w-4" /> Download Full PDF Report
+              <Download className="mr-2 h-4 w-4" /> Download as PDF (optional)
             </Button>
             <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-warmbrown/70">
-              <Lock className="h-3 w-3" /> Private & encrypted · 18+ pages, fully personalised
+              <Lock className="h-3 w-3" /> Everything is shown on this page · PDF is for keeping
             </p>
           </div>
         </div>
+
+        {/* Planetary positions table */}
+        <div className="mt-16 rounded-3xl border border-border bg-card p-8 shadow-soft">
+          <h3 className="font-display text-2xl">Planetary positions · Graha Sthiti</h3>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+            <table className="w-full text-sm">
+              <thead className="bg-cream/60 text-xs uppercase tracking-wider text-warmbrown/80">
+                <tr>
+                  <th className="px-4 py-3 text-left">Planet</th>
+                  <th className="px-4 py-3 text-left">Rashi</th>
+                  <th className="px-4 py-3 text-left">Degree</th>
+                  <th className="px-4 py-3 text-right">House</th>
+                </tr>
+              </thead>
+              <tbody>
+                {k.planets.map((p) => (
+                  <tr key={p.name} className="border-t border-border/60">
+                    <td className="px-4 py-3 font-medium text-charcoal">{p.name} <span className="text-warmbrown/60">({p.sanskrit})</span></td>
+                    <td className="px-4 py-3 text-warmbrown">{p.signName.split(" ")[0]}</td>
+                    <td className="px-4 py-3 font-mono text-warmbrown">{p.deg}</td>
+                    <td className="px-4 py-3 text-right font-display text-saffron">{p.house}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Life-area bullets */}
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <BulletCard icon={<Star />}    eyebrow="Swabhava" title="Your personality"        items={n.personality} />
+          <BulletCard icon={<Briefcase />} eyebrow="Karma"   title="Career & calling"        items={n.career} />
+          <BulletCard icon={<Coins />}     eyebrow="Dhana"   title="Wealth & abundance"      items={n.finance} />
+          <BulletCard icon={<Heart />}     eyebrow="Prema"   title="Love"                    items={n.love} />
+          <BulletCard icon={<Heart />}     eyebrow="Vivaha"  title="Marriage"                items={n.marriage} />
+          <BulletCard icon={<Activity />}  eyebrow="Arogya"  title="Health & vitality"       items={n.health} />
+          <BulletCard icon={<Home />}      eyebrow="Kutumba" title="Family & home"           items={n.family} />
+          <BulletCard icon={<BookOpen />}  eyebrow="Vidya"   title="Learning & intellect"    items={n.education} />
+          <BulletCard icon={<Plane />}     eyebrow="Yatra"   title="Travel & journeys"       items={n.travel} />
+          <BulletCard icon={<Flame />}     eyebrow="Moksha"  title="Spiritual path"          items={n.spiritual} />
+          <BulletCard icon={<CalendarRange />} eyebrow="Varshaphala" title="The year ahead"  items={n.yearAhead} />
+          <BulletCard icon={<Sparkles />}  eyebrow="Upaya"   title="Remedies & practices"    items={k.remedies} />
+        </div>
+
+        {/* Vimshottari Dasha */}
+        <div className="mt-16 rounded-3xl border border-border bg-card p-8 shadow-soft">
+          <h3 className="font-display text-2xl">Vimshottari Mahadasha · 120-year cycle</h3>
+          <p className="mt-3 max-w-3xl text-sm text-warmbrown/85">{n.dashaNow}</p>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+            <table className="w-full text-sm">
+              <thead className="bg-cream/60 text-xs uppercase tracking-wider text-warmbrown/80">
+                <tr>
+                  <th className="px-4 py-3 text-left">Lord</th>
+                  <th className="px-4 py-3 text-left">From</th>
+                  <th className="px-4 py-3 text-left">To</th>
+                  <th className="px-4 py-3 text-right">Years</th>
+                </tr>
+              </thead>
+              <tbody>
+                {k.mahadashas.map((d) => {
+                  const current = d.lord === k.currentDasha.lord;
+                  return (
+                    <tr key={d.lord + d.from} className={"border-t border-border/60 " + (current ? "bg-cream/40" : "")}>
+                      <td className="px-4 py-3 font-medium text-charcoal">
+                        {d.lord}{current && <span className="ml-2 rounded-full bg-saffron/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-saffron">Current</span>}
+                      </td>
+                      <td className="px-4 py-3 text-warmbrown">{Math.floor(d.from)}</td>
+                      <td className="px-4 py-3 text-warmbrown">{Math.floor(d.to)}</td>
+                      <td className="px-4 py-3 text-right font-display text-saffron">{Math.round(d.to - d.from)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Yogas + Doshas */}
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
+            <h3 className="font-display text-2xl">Yogas in your chart</h3>
+            <ul className="mt-5 space-y-3 text-sm text-warmbrown">
+              {k.yogas.map((y, i) => <li key={i} className="leading-relaxed">· {y}</li>)}
+            </ul>
+          </div>
+          <div className="rounded-3xl border border-border bg-card p-8 shadow-soft">
+            <h3 className="font-display text-2xl">Doshas — gentle considerations</h3>
+            <ul className="mt-5 space-y-4 text-sm text-warmbrown">
+              {k.doshas.map((d, i) => (
+                <li key={i}>
+                  <p className="font-display text-base text-charcoal">{d.name} — {d.present ? "present" : "not present"}</p>
+                  <p className="mt-1 leading-relaxed">{d.note}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Lucky + gemstone + mantra */}
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <LuckyCard icon={<Gem />} title="Gemstone" body={n.gemstone} />
+          <LuckyCard icon={<Flame />} title="Mantra (108 reps at dawn)" body={n.mantra} />
+          <LuckyCard
+            icon={<Sparkles />}
+            title="Lucky elements"
+            body={`Colours: ${n.luckyColors}\nDays: ${n.luckyDays}\nNumbers: ${n.luckyNumbers}`}
+          />
+        </div>
+
+        {/* PDF download (bottom) */}
+        <div className="mt-16 rounded-3xl border border-border bg-gradient-sky p-10 text-center shadow-soft">
+          <h3 className="font-display text-3xl">Want to keep this reading?</h3>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-warmbrown/85">
+            Everything you've read here is already shown above. If you'd like a beautifully typeset copy to revisit, download it as a free PDF — no email required.
+          </p>
+          <Button onClick={handleDownload} size="lg" className="mt-6 bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
+            <Download className="mr-2 h-4 w-4" /> Download Full PDF Report
+          </Button>
+        </div>
       </div>
     </section>
+  );
+}
+
+function BulletCard({ icon, eyebrow, title, items }: { icon: React.ReactNode; eyebrow: string; title: string; items: string[] }) {
+  return (
+    <div className="rounded-3xl border border-border bg-card p-7 shadow-soft">
+      <div className="flex items-center gap-3">
+        <div className="grid h-10 w-10 place-items-center rounded-xl bg-cream text-bronze">{icon}</div>
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-bronze">{eyebrow}</p>
+          <h4 className="font-display text-xl leading-tight text-charcoal">{title}</h4>
+        </div>
+      </div>
+      <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-warmbrown">
+        {items.map((it, i) => <li key={i}>· {it}</li>)}
+      </ul>
+    </div>
+  );
+}
+
+function LuckyCard({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
+  return (
+    <div className="rounded-3xl border border-border bg-card p-7 shadow-soft">
+      <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-gold text-primary-foreground shadow-gold">{icon}</div>
+      <h4 className="mt-4 font-display text-xl text-charcoal">{title}</h4>
+      <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-warmbrown">{body}</p>
+    </div>
   );
 }
 
