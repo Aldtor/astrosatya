@@ -599,3 +599,32 @@ export function localizePlanetEssences(
 
 // Re-export raw rashi/nakshatra lists in case other modules need them
 export { RASHIS, NAKSHATRAS, RASHI_LORDS };
+
+// ---------------- Pack registry ----------------
+
+export interface LangPack {
+  code: string;
+  label: string;
+  rashiTraits: Record<string, string>;
+  dasha: Record<string, string>;
+  nakGift: Record<string, string>;
+  houseTheme: string[];
+  gemstones: Record<string, string>;
+  hints: HintTable;
+  sentences: SentenceBuilder;
+}
+
+export function registerLangPack(p: LangPack): void {
+  if (SUPPORTED.some((s) => s.code === p.code)) return;
+  SUPPORTED.push({ code: p.code, label: p.label });
+  RASHI_TRAITS_I18N[p.code] = p.rashiTraits;
+  DASHA_NARRATIVE_I18N[p.code] = p.dasha;
+  NAK_GIFT_I18N[p.code] = p.nakGift;
+  HOUSE_THEME_I18N[p.code] = p.houseTheme;
+  GEMSTONES_I18N[p.code] = p.gemstones;
+  HINTS_I18N[p.code] = p.hints;
+  SENTENCES_I18N[p.code] = p.sentences;
+}
+
+// Self-register all additional Indian language packs.
+import "./i18n-packs/register";
