@@ -625,6 +625,3 @@ export function registerLangPack(p: LangPack): void {
   HINTS_I18N[p.code] = p.hints;
   SENTENCES_I18N[p.code] = p.sentences;
 }
-
-// Self-register all additional Indian language packs.
-import "./i18n-packs/register";
