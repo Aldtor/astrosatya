@@ -436,4 +436,3 @@ registerLangPack(MR);
 import "./packs-gu-pa-sa";
 import "./packs-ta-te-kn-ml";
 import "./packs-ur-or-as";
-import "./packs-extra";
