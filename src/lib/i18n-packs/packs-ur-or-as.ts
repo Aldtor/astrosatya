@@ -172,7 +172,7 @@ const ur_sent: SentenceBuilder = {
     "گھر میں ایک چھوٹی عبادت کی جگہ رکھیں — ایک چراغ، ایک پھول، ایک مقدس آواز۔",
   ],
 };
-const UR: LangPack = { code: "ur", label: "اُردُو (Urdu)", rashiTraits: ur_rashi, dasha: ur_dasha, nakGift: ur_nak, houseTheme: ur_house, gemstones: ur_gems, hints: ur_hints, sentences: ur_sent };
+export const UR: LangPack = { code: "ur", label: "اُردُو (Urdu)", rashiTraits: ur_rashi, dasha: ur_dasha, nakGift: ur_nak, houseTheme: ur_house, gemstones: ur_gems, hints: ur_hints, sentences: ur_sent };
 
 // ============================================================
 // Odia (or)
@@ -342,7 +342,7 @@ const or_sent: SentenceBuilder = {
     "ଗୃହରେ ଛୋଟ ପୂଜା ସ୍ଥାନ — ଗୋଟିଏ ଦୀପ, ଗୋଟିଏ ଫୁଲ, ଗୋଟିଏ ପବିତ୍ର ଧ୍ୱନି।",
   ],
 };
-const OR: LangPack = { code: "or", label: "ଓଡ଼ିଆ (Odia)", rashiTraits: or_rashi, dasha: or_dasha, nakGift: or_nak, houseTheme: or_house, gemstones: or_gems, hints: or_hints, sentences: or_sent };
+export const OR: LangPack = { code: "or", label: "ଓଡ଼ିଆ (Odia)", rashiTraits: or_rashi, dasha: or_dasha, nakGift: or_nak, houseTheme: or_house, gemstones: or_gems, hints: or_hints, sentences: or_sent };
 
 // ============================================================
 // Assamese (as)
@@ -512,7 +512,7 @@ const as_sent: SentenceBuilder = {
     "ঘৰত সৰু পূজা স্থান — এটা চাকি, এটা ফুল, এটা পবিত্ৰ ধ্বনি।",
   ],
 };
-const AS: LangPack = { code: "as", label: "অসমীয়া (Assamese)", rashiTraits: as_rashi, dasha: as_dasha, nakGift: as_nak, houseTheme: as_house, gemstones: as_gems, hints: as_hints, sentences: as_sent };
+export const AS: LangPack = { code: "as", label: "অসমীয়া (Assamese)", rashiTraits: as_rashi, dasha: as_dasha, nakGift: as_nak, houseTheme: as_house, gemstones: as_gems, hints: as_hints, sentences: as_sent };
 
 registerLangPack(UR);
 registerLangPack(OR);

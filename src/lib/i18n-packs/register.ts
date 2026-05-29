@@ -229,7 +229,7 @@ const bn_sent: SentenceBuilder = {
     "গৃহে একটি ছোট পূজা-স্থান রাখুন — এক প্রদীপ, এক ফুল, এক পবিত্র ধ্বনি।",
   ],
 };
-const BN: LangPack = { code: "bn", label: "বাংলা (Bengali)", rashiTraits: bn_rashi, dasha: bn_dasha, nakGift: bn_nak, houseTheme: bn_house, gemstones: bn_gems, hints: bn_hints, sentences: bn_sent };
+export const BN: LangPack = { code: "bn", label: "বাংলা (Bengali)", rashiTraits: bn_rashi, dasha: bn_dasha, nakGift: bn_nak, houseTheme: bn_house, gemstones: bn_gems, hints: bn_hints, sentences: bn_sent };
 
 // ============================================================
 // Marathi (mr)
@@ -425,7 +425,7 @@ const mr_sent: SentenceBuilder = {
     "घरात एक लहान पूजास्थान ठेवा — एक दिवा, एक फूल, एक पवित्र ध्वनी.",
   ],
 };
-const MR: LangPack = { code: "mr", label: "मराठी (Marathi)", rashiTraits: mr_rashi, dasha: mr_dasha, nakGift: mr_nak, houseTheme: mr_house, gemstones: mr_gems, hints: mr_hints, sentences: mr_sent };
+export const MR: LangPack = { code: "mr", label: "मराठी (Marathi)", rashiTraits: mr_rashi, dasha: mr_dasha, nakGift: mr_nak, houseTheme: mr_house, gemstones: mr_gems, hints: mr_hints, sentences: mr_sent };
 
 // Register both Bengali and Marathi immediately so they're available even
 // if later packs fail to parse.

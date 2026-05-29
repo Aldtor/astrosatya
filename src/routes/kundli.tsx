@@ -16,6 +16,7 @@ import { DateOfBirthPicker } from "@/components/site/DateOfBirthPicker";
 import { findLanguage } from "@/lib/languages";
 import { localizePlanetEssences, SUPPORTED_NARRATION_LANGS } from "@/lib/kundli-i18n";
 import "@/lib/i18n-packs/register";
+import "@/lib/i18n-packs/packs-extra";
 
 export const Route = createFileRoute("/kundli")({
   head: () => ({

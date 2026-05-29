@@ -199,7 +199,7 @@ const gu_sent: SentenceBuilder = {
     "ઘરમાં નાનું પૂજાસ્થાન રાખો — એક દીવો, એક પુષ્પ, એક પવિત્ર ધ્વનિ.",
   ],
 };
-const GU: LangPack = { code: "gu", label: "ગુજરાતી (Gujarati)", rashiTraits: gu_rashi, dasha: gu_dasha, nakGift: gu_nak, houseTheme: gu_house, gemstones: gu_gems, hints: gu_hints, sentences: gu_sent };
+export const GU: LangPack = { code: "gu", label: "ગુજરાતી (Gujarati)", rashiTraits: gu_rashi, dasha: gu_dasha, nakGift: gu_nak, houseTheme: gu_house, gemstones: gu_gems, hints: gu_hints, sentences: gu_sent };
 
 // ============================================================
 // Punjabi (pa) — Gurmukhi
@@ -381,7 +381,7 @@ const pa_sent: SentenceBuilder = {
     "ਘਰ ਵਿੱਚ ਛੋਟਾ ਪੂਜਾ-ਥਾਨ ਰੱਖੋ — ਇੱਕ ਦੀਵਾ, ਇੱਕ ਫੁੱਲ, ਇੱਕ ਪਵਿੱਤਰ ਧੁਨੀ।",
   ],
 };
-const PA: LangPack = { code: "pa", label: "ਪੰਜਾਬੀ (Punjabi)", rashiTraits: pa_rashi, dasha: pa_dasha, nakGift: pa_nak, houseTheme: pa_house, gemstones: pa_gems, hints: pa_hints, sentences: pa_sent };
+export const PA: LangPack = { code: "pa", label: "ਪੰਜਾਬੀ (Punjabi)", rashiTraits: pa_rashi, dasha: pa_dasha, nakGift: pa_nak, houseTheme: pa_house, gemstones: pa_gems, hints: pa_hints, sentences: pa_sent };
 
 // ============================================================
 // Sanskrit (sa) — Devanagari, classical phrasing
@@ -563,7 +563,7 @@ const sa_sent: SentenceBuilder = {
     "गृहे लघुपूजास्थानं रक्ष — एकः दीपः, एकं पुष्पं, एका पवित्रा ध्वनिः।",
   ],
 };
-const SA: LangPack = { code: "sa", label: "संस्कृतम् (Sanskrit)", rashiTraits: sa_rashi, dasha: sa_dasha, nakGift: sa_nak, houseTheme: sa_house, gemstones: sa_gems, hints: sa_hints, sentences: sa_sent };
+export const SA: LangPack = { code: "sa", label: "संस्कृतम् (Sanskrit)", rashiTraits: sa_rashi, dasha: sa_dasha, nakGift: sa_nak, houseTheme: sa_house, gemstones: sa_gems, hints: sa_hints, sentences: sa_sent };
 
 registerLangPack(GU);
 registerLangPack(PA);
