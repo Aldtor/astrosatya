@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as MatchmakingRouteImport } from './routes/matchmaking'
 import { Route as KundliRouteImport } from './routes/kundli'
 import { Route as HoroscopeRouteImport } from './routes/horoscope'
@@ -16,6 +17,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MatchmakingRoute = MatchmakingRouteImport.update({
   id: '/matchmaking',
   path: '/matchmaking',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/horoscope': typeof HoroscopeRoute
   '/kundli': typeof KundliRoute
   '/matchmaking': typeof MatchmakingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +90,16 @@ export interface FileRouteTypes {
     | '/horoscope'
     | '/kundli'
     | '/matchmaking'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/horoscope' | '/kundli' | '/matchmaking'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/horoscope'
+    | '/kundli'
+    | '/matchmaking'
+    | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
@@ -91,6 +108,7 @@ export interface FileRouteTypes {
     | '/horoscope'
     | '/kundli'
     | '/matchmaking'
+    | '/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -100,10 +118,18 @@ export interface RootRouteChildren {
   HoroscopeRoute: typeof HoroscopeRoute
   KundliRoute: typeof KundliRoute
   MatchmakingRoute: typeof MatchmakingRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/matchmaking': {
       id: '/matchmaking'
       path: '/matchmaking'
@@ -156,6 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   HoroscopeRoute: HoroscopeRoute,
   KundliRoute: KundliRoute,
   MatchmakingRoute: MatchmakingRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
