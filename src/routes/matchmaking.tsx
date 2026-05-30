@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import React, { useId, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,20 @@ export const Route = createFileRoute("/matchmaking")({
       { name: "description", content: "Discover Ashtakoot compatibility — emotional, marriage and spiritual harmony, beautifully presented." },
       { property: "og:title", content: "Vedic Matchmaking — AstroSatya" },
       { property: "og:description", content: "36-guna compatibility, designed with reverence." },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "AstroSatya Vedic Matchmaking",
+          description: "Ashtakoot 36-guna compatibility analysis for marriage based on classical Vedic principles.",
+          applicationCategory: "LifestyleApplication",
+          operatingSystem: "Web",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
     ],
   }),
   component: MatchPage,
@@ -93,10 +107,14 @@ function PartnerForm({ title, value, onChange }: { title: string; value: Partner
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const id = useId();
+  const child = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement<any>, { id })
+    : children;
   return (
     <div>
-      <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
-      {children}
+      <Label htmlFor={id} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
+      {child}
     </div>
   );
 }

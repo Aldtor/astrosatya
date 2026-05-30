@@ -21,6 +21,21 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "AstroSatya — Discover Your Cosmic Truth" },
       { property: "og:description", content: "Ancient Vedic wisdom, thoughtfully designed for modern life." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: [
+            { "@type": "Question", name: "Is the kundli generation free?", acceptedAnswer: { "@type": "Answer", text: "Yes — kundli generation is completely free for everyone, with detailed planetary positions, Dasha analysis, and dosha insights." } },
+            { "@type": "Question", name: "Which astrology tradition do you follow?", acceptedAnswer: { "@type": "Answer", text: "Vedic (Jyotish) — sidereal zodiac with Lahiri ayanamsa, using classical North Indian chart conventions." } },
+            { "@type": "Question", name: "Is my birth data private?", acceptedAnswer: { "@type": "Answer", text: "Always. Your details are encrypted and never shared. You may delete your data at any time." } },
+            { "@type": "Question", name: "Can I talk to a real astrologer?", acceptedAnswer: { "@type": "Answer", text: "Yes — we offer personal consultations with vetted Vedic astrologers through our contact page." } },
+          ],
+        }),
+      },
+    ],
   }),
   component: Home,
 });

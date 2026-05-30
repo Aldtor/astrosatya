@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Mail, MessageCircle, MapPin } from "lucide-react";
+import { useId } from "react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -51,35 +52,45 @@ function ContactPage() {
               ))}
             </div>
 
-            <form
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function ContactForm() {
+  const nameId = useId();
+  const emailId = useId();
+  const subjectId = useId();
+  const messageId = useId();
+  return (
+    <form
               onSubmit={(e) => e.preventDefault()}
               className="rounded-3xl border border-border bg-card p-8 shadow-lift lg:col-span-3"
             >
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Name</Label>
-                  <Input placeholder="Your name" />
+                  <Label htmlFor={nameId} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Name</Label>
+                  <Input id={nameId} placeholder="Your name" />
                 </div>
                 <div>
-                  <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Email</Label>
-                  <Input type="email" placeholder="you@email.com" />
+                  <Label htmlFor={emailId} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Email</Label>
+                  <Input id={emailId} type="email" placeholder="you@email.com" />
                 </div>
                 <div className="sm:col-span-2">
-                  <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Subject</Label>
-                  <Input placeholder="How can we help?" />
+                  <Label htmlFor={subjectId} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Subject</Label>
+                  <Input id={subjectId} placeholder="How can we help?" />
                 </div>
                 <div className="sm:col-span-2">
-                  <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Message</Label>
-                  <Textarea rows={5} placeholder="Tell us a little more…" />
+                  <Label htmlFor={messageId} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">Message</Label>
+                  <Textarea id={messageId} rows={5} placeholder="Tell us a little more…" />
                 </div>
               </div>
               <Button type="submit" size="lg" className="mt-7 w-full bg-gradient-gold text-primary-foreground shadow-gold hover:opacity-95">
                 Send message
               </Button>
-            </form>
-          </div>
-        </div>
-      </section>
-    </main>
+    </form>
   );
 }

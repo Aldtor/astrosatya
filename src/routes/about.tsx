@@ -63,7 +63,7 @@ function AboutPage() {
                   <div className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-gold shadow-gold">
                     <v.icon className="h-4 w-4 text-primary-foreground" />
                   </div>
-                  <h4 className="mt-4 font-display text-xl">{v.t}</h4>
+                  <h3 className="mt-4 font-display text-xl">{v.t}</h3>
                   <p className="mt-2 text-sm text-warmbrown/85 leading-relaxed">{v.d}</p>
                 </div>
               ))}

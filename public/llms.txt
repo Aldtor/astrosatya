@@ -1,0 +1,12 @@
+# AstroSatya
+
+> Premium Vedic astrology platform — kundli, daily horoscope, and matchmaking, thoughtfully designed for modern seekers.
+
+## Pages
+
+- [Home](/): Brand overview and entry into kundli, horoscope, and matchmaking.
+- [Free Kundli Generator](/kundli): Vedic birth chart with planetary positions, Vimshottari Dasha, doshas, and remedies.
+- [Daily Horoscope](/horoscope): Today's reading for all 12 zodiac signs with lucky color, number, and compatible sign.
+- [Vedic Matchmaking](/matchmaking): Ashtakoot 36-guna compatibility analysis.
+- [About](/about): Our story, values, and philosophy.
+- [Contact](/contact): Reach the AstroSatya team.

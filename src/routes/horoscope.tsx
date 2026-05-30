@@ -28,6 +28,20 @@ export const Route = createFileRoute("/horoscope")({
       { property: "og:title", content: "Daily Horoscope — AstroSatya" },
       { property: "og:description", content: "A whisper from the cosmos, every morning." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "AstroSatya Daily Horoscope",
+          description: "Personalised Vedic daily horoscope for all 12 zodiac signs with lucky color, number, and compatible sign.",
+          applicationCategory: "LifestyleApplication",
+          operatingSystem: "Web",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
   }),
   component: HoroscopePage,
 });
@@ -115,7 +129,7 @@ function HoroscopePage() {
                 <div className="grid h-10 w-10 place-items-center rounded-lg bg-gradient-gold shadow-gold">
                   <t.icon className="h-4 w-4 text-primary-foreground" />
                 </div>
-                <h4 className="mt-4 font-display text-xl">{t.title}</h4>
+                <h3 className="mt-4 font-display text-xl">{t.title}</h3>
                 <p className="mt-2 text-sm text-warmbrown/85 leading-relaxed">{t.text}</p>
               </div>
             ))}
