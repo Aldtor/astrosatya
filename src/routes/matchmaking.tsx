@@ -20,6 +20,20 @@ export const Route = createFileRoute("/matchmaking")({
       { property: "og:title", content: "Vedic Matchmaking — AstroSatya" },
       { property: "og:description", content: "36-guna compatibility, designed with reverence." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "AstroSatya Vedic Matchmaking",
+          description: "Ashtakoot 36-guna compatibility analysis for marriage based on classical Vedic principles.",
+          applicationCategory: "LifestyleApplication",
+          operatingSystem: "Web",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
   }),
   component: MatchPage,
 });

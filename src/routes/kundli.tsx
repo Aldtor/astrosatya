@@ -26,6 +26,20 @@ export const Route = createFileRoute("/kundli")({
       { property: "og:title", content: "Free Vedic Kundli Generator" },
       { property: "og:description", content: "Your birth chart, painted with intention." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "AstroSatya Kundli Generator",
+          description: "Free Vedic birth chart with planetary positions, Vimshottari Dasha, doshas, and remedies.",
+          applicationCategory: "LifestyleApplication",
+          operatingSystem: "Web",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
   }),
   component: KundliPage,
 });
