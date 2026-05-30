@@ -23,10 +23,19 @@ const SIGNS = [
 export const Route = createFileRoute("/horoscope")({
   head: () => ({
     meta: [
-      { title: "Daily Horoscope — AstroSatya" },
-      { name: "description", content: "Today's personalised guidance from the cosmos. Lucky color, lucky number and compatible sign for every zodiac." },
-      { property: "og:title", content: "Daily Horoscope — AstroSatya" },
-      { property: "og:description", content: "A whisper from the cosmos, every morning." },
+      { title: "Daily Horoscope Today — Free Vedic Reading for All 12 Signs" },
+      { name: "description", content: "Today's free Vedic horoscope for Aries, Taurus, Gemini and every sign — with lucky color, lucky number, compatible sign, mood, love, career, health and spiritual guidance." },
+      { property: "og:title", content: "Daily Horoscope Today — Free Vedic Reading for All 12 Signs" },
+      { property: "og:description", content: "Free daily Vedic horoscope with lucky color, lucky number, compatible sign and guidance for love, career, health and spirit." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://astrosatya.lovable.app/horoscope" },
+      { property: "og:site_name", content: "AstroSatya" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Daily Horoscope Today — Free Vedic Reading" },
+      { name: "twitter:description", content: "Lucky color, number, compatible sign and guidance for love, career, health and spirit — every day." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://astrosatya.lovable.app/horoscope" },
     ],
     scripts: [
       {
@@ -39,6 +48,17 @@ export const Route = createFileRoute("/horoscope")({
           applicationCategory: "LifestyleApplication",
           operatingSystem: "Web",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
+            { "@type": "ListItem", position: 2, name: "Daily Horoscope", item: "https://astrosatya.lovable.app/horoscope" },
+          ],
         }),
       },
     ],

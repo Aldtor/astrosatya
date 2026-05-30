@@ -9,10 +9,32 @@ import { useId } from "react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — AstroSatya" },
-      { name: "description", content: "Reach our team. We respond with the same calm we bring to every reading." },
-      { property: "og:title", content: "Contact — AstroSatya" },
-      { property: "og:description", content: "We'd love to hear from you." },
+      { title: "Contact AstroSatya — Talk to a Vedic Astrologer" },
+      { name: "description", content: "Email hello@astrosatya.com or message us Mon–Sat, 9:00–19:00 IST. Studios in Varanasi and Bengaluru — we reply mindfully to every note." },
+      { property: "og:title", content: "Contact AstroSatya — Talk to a Vedic Astrologer" },
+      { property: "og:description", content: "Email, message, or visit our studios in Varanasi and Bengaluru — we respond with the calm we bring to every reading." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://astrosatya.lovable.app/contact" },
+      { property: "og:site_name", content: "AstroSatya" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Contact AstroSatya" },
+      { name: "twitter:description", content: "Email hello@astrosatya.com or message us Mon–Sat, 9:00–19:00 IST." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://astrosatya.lovable.app/contact" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
+            { "@type": "ListItem", position: 2, name: "Contact", item: "https://astrosatya.lovable.app/contact" },
+          ],
+        }),
+      },
     ],
   }),
   component: ContactPage,
