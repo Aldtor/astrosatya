@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import React, { useId, useState } from "react";
 import { Sparkles, Download, FileText, Lock, Star, Heart, Briefcase, Coins, Activity, Home, BookOpen, Plane, Flame, CalendarRange, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -102,10 +102,14 @@ function KundliPage() {
 }
 
 function Field({ label, children, className = "" }: { label: string; children: React.ReactNode; className?: string }) {
+  const id = useId();
+  const child = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement<any>, { id })
+    : children;
   return (
     <div className={className}>
-      <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
-      {children}
+      <Label htmlFor={id} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
+      {child}
     </div>
   );
 }
@@ -304,7 +308,7 @@ function BulletCard({ icon, eyebrow, title, items }: { icon: React.ReactNode; ey
         <div className="grid h-10 w-10 place-items-center rounded-xl bg-cream text-bronze">{icon}</div>
         <div>
           <p className="text-[10px] uppercase tracking-[0.2em] text-bronze">{eyebrow}</p>
-          <h4 className="font-display text-xl leading-tight text-charcoal">{title}</h4>
+          <h3 className="font-display text-xl leading-tight text-charcoal">{title}</h3>
         </div>
       </div>
       <ul className="mt-5 space-y-2.5 text-sm leading-relaxed text-warmbrown">
@@ -318,7 +322,7 @@ function LuckyCard({ icon, title, body }: { icon: React.ReactNode; title: string
   return (
     <div className="rounded-3xl border border-border bg-card p-7 shadow-soft">
       <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-gold text-primary-foreground shadow-gold">{icon}</div>
-      <h4 className="mt-4 font-display text-xl text-charcoal">{title}</h4>
+      <h3 className="mt-4 font-display text-xl text-charcoal">{title}</h3>
       <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-warmbrown">{body}</p>
     </div>
   );

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import React, { useId, useState } from "react";
 import { Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -93,10 +93,14 @@ function PartnerForm({ title, value, onChange }: { title: string; value: Partner
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const id = useId();
+  const child = React.isValidElement(children)
+    ? React.cloneElement(children as React.ReactElement<any>, { id })
+    : children;
   return (
     <div>
-      <Label className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
-      {children}
+      <Label htmlFor={id} className="mb-2 block text-xs uppercase tracking-wider text-warmbrown/80">{label}</Label>
+      {child}
     </div>
   );
 }
