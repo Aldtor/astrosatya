@@ -15,10 +15,19 @@ import { findLanguage } from "@/lib/languages";
 export const Route = createFileRoute("/matchmaking")({
   head: () => ({
     meta: [
-      { title: "Vedic Matchmaking — AstroSatya" },
-      { name: "description", content: "Discover Ashtakoot compatibility — emotional, marriage and spiritual harmony, beautifully presented." },
-      { property: "og:title", content: "Vedic Matchmaking — AstroSatya" },
-      { property: "og:description", content: "36-guna compatibility, designed with reverence." },
+      { title: "Free Kundli Matching — Ashtakoot 36 Guna Marriage Compatibility" },
+      { name: "description", content: "Free online Vedic kundli matching for marriage: Ashtakoot 36-guna score across all 8 kootas, Mangal Dosha check, strengths, gentle challenges and remedies." },
+      { property: "og:title", content: "Free Kundli Matching — Ashtakoot 36 Guna Marriage Compatibility" },
+      { property: "og:description", content: "36-guna score across all 8 kootas, Mangal Dosha check, strengths, challenges and remedies — free." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://astrosatya.lovable.app/matchmaking" },
+      { property: "og:site_name", content: "AstroSatya" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Free Kundli Matching — Ashtakoot 36 Guna" },
+      { name: "twitter:description", content: "36-guna marriage compatibility with Mangal Dosha check — free." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://astrosatya.lovable.app/matchmaking" },
     ],
     scripts: [
       {
@@ -31,6 +40,17 @@ export const Route = createFileRoute("/matchmaking")({
           applicationCategory: "LifestyleApplication",
           operatingSystem: "Web",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
+            { "@type": "ListItem", position: 2, name: "Matchmaking", item: "https://astrosatya.lovable.app/matchmaking" },
+          ],
         }),
       },
     ],

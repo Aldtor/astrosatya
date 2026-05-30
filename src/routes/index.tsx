@@ -16,10 +16,19 @@ import heroBg from "@/assets/hero-bg.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AstroSatya — Discover Your Cosmic Truth" },
-      { name: "description", content: "Premium Vedic astrology platform. Free kundli, daily horoscope, matchmaking, and spiritual guidance designed for modern life." },
-      { property: "og:title", content: "AstroSatya — Discover Your Cosmic Truth" },
-      { property: "og:description", content: "Ancient Vedic wisdom, thoughtfully designed for modern life." },
+      { title: "AstroSatya — Free Vedic Kundli, Daily Horoscope & Matchmaking" },
+      { name: "description", content: "Free Vedic astrology online: generate your kundli, read today's horoscope for all 12 signs, and check Ashtakoot marriage compatibility — in 20+ Indian languages." },
+      { property: "og:title", content: "AstroSatya — Free Vedic Kundli, Daily Horoscope & Matchmaking" },
+      { property: "og:description", content: "Free Vedic astrology online: kundli, daily horoscope, and 36-guna matchmaking — in 20+ Indian languages." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://astrosatya.lovable.app/" },
+      { property: "og:site_name", content: "AstroSatya" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "AstroSatya — Free Vedic Kundli, Daily Horoscope & Matchmaking" },
+      { name: "twitter:description", content: "Free Vedic astrology online: kundli, daily horoscope, and 36-guna matchmaking — in 20+ Indian languages." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://astrosatya.lovable.app/" },
     ],
     scripts: [
       {
