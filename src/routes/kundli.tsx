@@ -26,14 +26,14 @@ export const Route = createFileRoute("/kundli")({
       { property: "og:title", content: "Free Online Kundli Generator — Vedic Birth Chart with Dasha & Doshas" },
       { property: "og:description", content: "North Indian birth chart, planetary positions, Vimshottari Dasha and dosha analysis — free, in 20+ Indian languages." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/kundli" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/kundli" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Free Online Kundli Generator — Vedic Birth Chart" },
       { name: "twitter:description", content: "Planetary positions, Vimshottari Dasha and dosha analysis — free, in 20+ Indian languages." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/kundli" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/kundli" },
     ],
     scripts: [
       {
@@ -54,8 +54,8 @@ export const Route = createFileRoute("/kundli")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Kundli", item: "https://astrosatya.lovable.app/kundli" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatyaa.vercel.app/" },
+            { "@type": "ListItem", position: 2, name: "Kundli", item: "https://astrosatyaa.vercel.app/kundli" },
           ],
         }),
       },

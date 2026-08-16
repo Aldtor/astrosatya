@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://astrosatya.lovable.app/sitemap.xml
+Sitemap: https://astrosatyaa.vercel.app/sitemap.xml

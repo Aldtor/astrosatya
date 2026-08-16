@@ -21,14 +21,14 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "AstroSatya — Free Vedic Kundli, Daily Horoscope & Matchmaking" },
       { property: "og:description", content: "Free Vedic astrology online: kundli, daily horoscope, and 36-guna matchmaking — in 20+ Indian languages." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "AstroSatya — Free Vedic Kundli, Daily Horoscope & Matchmaking" },
       { name: "twitter:description", content: "Free Vedic astrology online: kundli, daily horoscope, and 36-guna matchmaking — in 20+ Indian languages." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/" },
     ],
     scripts: [
       {

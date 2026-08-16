@@ -14,14 +14,14 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact AstroSatya — Talk to a Vedic Astrologer" },
       { property: "og:description", content: "Email, message, or visit our studios in Varanasi and Bengaluru — we respond with the calm we bring to every reading." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/contact" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/contact" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Contact AstroSatya" },
       { name: "twitter:description", content: "Email hello@astrosatya.com or message us Mon–Sat, 9:00–19:00 IST." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/contact" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/contact" },
     ],
     scripts: [
       {
@@ -30,8 +30,8 @@ export const Route = createFileRoute("/contact")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Contact", item: "https://astrosatya.lovable.app/contact" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatyaa.vercel.app/" },
+            { "@type": "ListItem", position: 2, name: "Contact", item: "https://astrosatyaa.vercel.app/contact" },
           ],
         }),
       },

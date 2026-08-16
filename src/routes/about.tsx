@@ -10,14 +10,14 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About AstroSatya — Our Vedic Astrology Story & Values" },
       { property: "og:description", content: "Classical Jyotish methodology paired with calm, modern design — authentic, private, and crafted with reverence." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/about" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/about" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "About AstroSatya" },
       { name: "twitter:description", content: "Classical Jyotish methodology paired with calm, modern design." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/about" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/about" },
     ],
     scripts: [
       {
@@ -26,8 +26,8 @@ export const Route = createFileRoute("/about")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "About", item: "https://astrosatya.lovable.app/about" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatyaa.vercel.app/" },
+            { "@type": "ListItem", position: 2, name: "About", item: "https://astrosatyaa.vercel.app/about" },
           ],
         }),
       },

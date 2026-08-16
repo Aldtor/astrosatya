@@ -20,14 +20,14 @@ export const Route = createFileRoute("/matchmaking")({
       { property: "og:title", content: "Free Kundli Matching — Ashtakoot 36 Guna Marriage Compatibility" },
       { property: "og:description", content: "36-guna score across all 8 kootas, Mangal Dosha check, strengths, challenges and remedies — free." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/matchmaking" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/matchmaking" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Free Kundli Matching — Ashtakoot 36 Guna" },
       { name: "twitter:description", content: "36-guna marriage compatibility with Mangal Dosha check — free." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/matchmaking" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/matchmaking" },
     ],
     scripts: [
       {
@@ -48,8 +48,8 @@ export const Route = createFileRoute("/matchmaking")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Matchmaking", item: "https://astrosatya.lovable.app/matchmaking" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatyaa.vercel.app/" },
+            { "@type": "ListItem", position: 2, name: "Matchmaking", item: "https://astrosatyaa.vercel.app/matchmaking" },
           ],
         }),
       },

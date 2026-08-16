@@ -28,14 +28,14 @@ export const Route = createFileRoute("/horoscope")({
       { property: "og:title", content: "Daily Horoscope Today — Free Vedic Reading for All 12 Signs" },
       { property: "og:description", content: "Free daily Vedic horoscope with lucky color, lucky number, compatible sign and guidance for love, career, health and spirit." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://astrosatya.lovable.app/horoscope" },
+      { property: "og:url", content: "https://astrosatyaa.vercel.app/horoscope" },
       { property: "og:site_name", content: "AstroSatya" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Daily Horoscope Today — Free Vedic Reading" },
       { name: "twitter:description", content: "Lucky color, number, compatible sign and guidance for love, career, health and spirit — every day." },
     ],
     links: [
-      { rel: "canonical", href: "https://astrosatya.lovable.app/horoscope" },
+      { rel: "canonical", href: "https://astrosatyaa.vercel.app/horoscope" },
     ],
     scripts: [
       {
@@ -56,8 +56,8 @@ export const Route = createFileRoute("/horoscope")({
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatya.lovable.app/" },
-            { "@type": "ListItem", position: 2, name: "Daily Horoscope", item: "https://astrosatya.lovable.app/horoscope" },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://astrosatyaa.vercel.app/" },
+            { "@type": "ListItem", position: 2, name: "Daily Horoscope", item: "https://astrosatyaa.vercel.app/horoscope" },
           ],
         }),
       },
